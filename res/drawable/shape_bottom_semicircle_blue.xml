@@ -1,0 +1,11 @@
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+	android:shape="rectangle" android:padding="10dp">
+	
+		<solid android:color="@color/light_blue"/>
+		
+		<corners 
+		android:bottomRightRadius="0dp"
+		android:bottomLeftRadius="0dp"
+		android:topLeftRadius="@dimen/popup_button_width"
+		android:topRightRadius="@dimen/popup_button_width"/>
+</shape>

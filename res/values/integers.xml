@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="seekBar_init_value">2000</integer>
+    <integer name="seekBar_max_value">19</integer>
+    <integer name="seekBar_multi_factor">500</integer>
+    <integer name="map_zoom_factor">13</integer>
+    <integer name="double_tap_timeout">3000</integer>
+
+    </resources>

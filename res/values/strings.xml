@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">M-I-Close</string>
+    <string name="action_settings">Settings</string>
+    <string name="set_alarm">Set\nAlarm</string>
+    <string name="set_new_alarm">New\nAlarm</string>
+    <string name="title_activity_set_target">SetTargetActivity</string>
+    <string name="your_target_address">Your target address</string>
+    <string name="set_target_radius">Distance from target</string>
+    <string name="kilometers">Meters</string>
+    <string name="ok">OK</string>
+    <string name="title_activity_alarm">AlarmActivity</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="title_activity_set_alarm_done">SetAlarmDoneActivity</string>
+    <string name="alarm_set_done">Alarm set done!</string>
+    <string name="stop_alarm">Alarm\nStop</string>
+    <string name="cancel_alarm">Alarm\nCancel</string>
+    <string name="alarm_canceled">Alarm canceled!</string>
+    <string name="press_back_again">Press "Back" again to exit</string>
+    <string name="adress_not_found">Address not found!</string>
+    <string name="no_internet_connection">No internet connection available!</string>
+    <string name="internal_error">Internal Error!</string>
+    <string name="you_need_to_type_address">You need to type an address</string>
+    <string name="how_far_from_target">How far from target\nwould you like to be noticed?</string>
+    <string name="go">Go!</string>
+    <string name="you_are_getting_close">You are getting close!</string>
+    <string name="your_destination_is_only">You destination is only</string>
+    <string name="meters_from_here">meters from here.</string>
+
+</resources>

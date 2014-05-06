@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/alarm_map1"
+        android:layout_below="@+id/stopAlarm_button"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:name="com.google.android.gms.maps.MapFragment"/>
+    
+    <TextView
+        android:id="@+id/newAlarmTextView"
+        android:layout_width="@dimen/popup_button_width"
+        android:layout_height="@dimen/popup_button_hight"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/shape_bottom_semicircle_blue"
+        android:gravity="center"
+        android:paddingTop="10dp"
+        android:text="@string/set_new_alarm"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@color/yellow"
+        android:textSize="@dimen/popup_button_text_size"
+        android:visibility="invisible" />
+    
+    
+    <TextView
+        android:id="@+id/cancelAlarmTextView"
+        android:layout_width="@dimen/popup_button_width"
+        android:layout_height="@dimen/popup_button_hight"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/shape_top_semicircle_turquoise"
+        android:gravity="center"
+        android:paddingBottom="10dp"
+        android:text="@string/cancel_alarm"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@color/purple"
+        android:textSize="@dimen/popup_button_text_size"
+        android:visibility="invisible" />
+    
+    <TextView
+        android:id="@+id/stopAlarmTextView"
+        android:layout_width="@dimen/popup_button_width"
+        android:layout_height="@dimen/popup_button_hight"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/shape_top_semicircle_pink"
+        android:gravity="center"
+        android:paddingBottom="10dp"
+        android:text="@string/stop_alarm"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@color/yellow"
+        android:textSize="@dimen/popup_button_text_size"
+        android:visibility="invisible" />
+    
+</RelativeLayout>

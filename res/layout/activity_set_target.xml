@@ -1,0 +1,78 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context="com.boazsh.m_i_close.app.activities.SetTargetActivity">
+
+    <Button
+        android:id="@+id/ok_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:text="@string/ok"
+        android:textSize="40sp" />
+
+    <EditText
+        android:id="@+id/setAlarm_Button"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="14dp"
+        android:ems="10"
+        android:hint="@string/your_target_address"
+        android:inputType="textPostalAddress" >
+
+        <requestFocus />
+    </EditText>
+
+    <TextView
+        android:id="@+id/setDistance_textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/setAlarm_Button"
+        android:layout_alignStart="@+id/setAlarm_Button"
+        android:layout_below="@+id/setAlarm_Button"
+        android:layout_marginTop="31dp"
+        android:text="@string/set_target_radius"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <SeekBar
+        android:id="@+id/radius_SeekBar"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/setDistance_textView"
+        android:layout_alignStart="@+id/setAlarm_Button"
+        android:layout_below="@+id/setDistance_textView"
+        android:layout_marginTop="62dp"
+        android:max="@integer/seekBar_max_value" />
+
+    <TextView
+        android:id="@+id/kilometersFromTarget_textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/kilometers_TextView"
+        android:layout_alignBottom="@+id/kilometers_TextView"
+        android:layout_alignRight="@+id/ok_button"
+        android:paddingLeft="5dp"
+        android:text="@string/kilometers"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TextView
+        android:id="@+id/kilometers_TextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/radius_SeekBar"
+        android:layout_below="@+id/radius_SeekBar"
+        android:layout_marginTop="21dp"
+        android:layout_toLeftOf="@+id/kilometersFromTarget_textView"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textStyle="bold" />
+
+
+</RelativeLayout>
