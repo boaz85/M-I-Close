@@ -1,12 +1,5 @@
 package com.boazsh.m_i_close.app.activities;
 
-import com.google.android.gms.maps.CameraUpdate;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
-import com.google.android.gms.maps.model.CircleOptions;
-import com.google.android.gms.maps.model.LatLng;
-
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -32,9 +25,7 @@ public abstract class MICloseBaseActivity extends Activity {
 	
 	public static final String ALARM_SET_KEY = "alarm_set";
 	
-	private static final double RANGE = 5.0;
-	private static final double MAX_ZOOM_MINUS_TWO = 13;
-	private static final double DIV_FACTOR = 10000;
+	
 
 	protected SharedPreferences mSharedPreferences;
 	protected Editor mPreferencesEditor;
@@ -116,31 +107,6 @@ public abstract class MICloseBaseActivity extends Activity {
 	protected int getIntegerResource(int id) {
 		
         return getResources().getInteger(id);
-    }
-	
-	protected GoogleMap createMapObject(int mapFragmentId, double latitude, double longitude, int targetDistance) {
-
-        GoogleMap map = ((MapFragment) getFragmentManager().findFragmentById(mapFragmentId)).getMap();
-        map.setMyLocationEnabled(true);
-        LatLng userLatLng = new LatLng(latitude, longitude);
-
-        int radiusStrokeColor =     getIntegerResource(R.color.yellow);
-        int radiusFillColor =       getIntegerResource(R.color.light_blue_trans);
-
-        CircleOptions circleOptions = new CircleOptions();
-        circleOptions.fillColor(radiusFillColor).center(userLatLng).strokeWidth(2);
-        circleOptions.strokeColor(radiusStrokeColor).radius(targetDistance);
-        map.addCircle(circleOptions);
-
-        CameraUpdate center = CameraUpdateFactory.newLatLng(userLatLng);
-        map.moveCamera(center);
-
-        double zoomValue = (MAX_ZOOM_MINUS_TWO - ((RANGE / DIV_FACTOR) * targetDistance)) + 2;
-        
-        CameraUpdate zoom = CameraUpdateFactory.zoomTo((float) zoomValue);
-        map.animateCamera(zoom);
-        
-        return map;
     }
 	
 	protected void showToast(int stringId, boolean isLong) {

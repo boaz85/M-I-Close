@@ -4,6 +4,12 @@ import com.boazsh.m_i_close.app.R;
 import com.boazsh.m_i_close.app.services.AlarmService;
 import com.boazsh.m_i_close.app.services.AlarmServiceMessage;
 import com.boazsh.m_i_close.app.services.LocationService;
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.model.CircleOptions;
+import com.google.android.gms.maps.model.LatLng;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -21,6 +27,10 @@ public class AlarmActivity extends MICloseBaseActivity {
 	public static final String ALARM_ACTIVITY_INTENT_ACTION = "com.boazsh.m_i_close.app.ALARM_ACTIVITY_BROADCAST";
 	public static final String ALARM_STARTED_KEY = "alarm_started";
 	public static final String ALARM_DONE_KEY = "alarm_done";
+	
+	private static final double RANGE = 5.0;
+	private static final double MAX_ZOOM_MINUS_TWO = 13;
+	private static final double DIV_FACTOR = 10000;
 
 	private TextView mStopAlarm_TextView;
 	private TextView mNewAlarm_TextView;
@@ -76,7 +86,7 @@ public class AlarmActivity extends MICloseBaseActivity {
 		mTargetDistance = mSharedPreferences.getInt(TARGET_DISTANCE_KEY, -1);
 		// TODO: Validate values!
 
-		createMapObject(R.id.alarm_map1, latitude, longitude, mTargetDistance);
+		createMapObject(latitude, longitude);
 
 		/*
 		 * "Alarm Cancel" button clicked.
@@ -184,4 +194,29 @@ public class AlarmActivity extends MICloseBaseActivity {
 		view.startAnimation(popOut);
 		view.setVisibility(View.INVISIBLE);
 	}
+	
+	protected GoogleMap createMapObject(double latitude, double longitude) {
+
+        GoogleMap map = ((MapFragment) getFragmentManager().findFragmentById(R.id.alarm_map1)).getMap();
+        map.setMyLocationEnabled(true);
+        LatLng userLatLng = new LatLng(latitude, longitude);
+
+        int radiusStrokeColor =     getIntegerResource(R.color.yellow);
+        int radiusFillColor =       getIntegerResource(R.color.light_blue_trans);
+
+        CircleOptions circleOptions = new CircleOptions();
+        circleOptions.fillColor(radiusFillColor).center(userLatLng).strokeWidth(2);
+        circleOptions.strokeColor(radiusStrokeColor).radius(mTargetDistance);
+        map.addCircle(circleOptions);
+
+        CameraUpdate center = CameraUpdateFactory.newLatLng(userLatLng);
+        map.moveCamera(center);
+
+        double zoomValue = (MAX_ZOOM_MINUS_TWO - ((RANGE / DIV_FACTOR) * mTargetDistance)) + 2;
+        
+        CameraUpdate zoom = CameraUpdateFactory.zoomTo((float) zoomValue);
+        map.animateCamera(zoom);
+        
+        return map;
+    }
 }

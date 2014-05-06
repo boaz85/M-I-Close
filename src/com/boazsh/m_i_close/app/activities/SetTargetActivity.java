@@ -21,12 +21,11 @@ import com.boazsh.m_i_close.app.R;
 import com.boazsh.m_i_close.app.helpers.DataParser;
 import com.boazsh.m_i_close.app.services.LocationService;
 
-
 public class SetTargetActivity extends MICloseBaseActivity {
 
 	
 	private static final String WEB_API_KEY = "AIzaSyBG3ZEQRc1AhXgeIV9dsSUo7mY7FfhgjV8";
-	
+
 	private SeekBar mDistance_SeekBar;
 	private AutoCompleteTextView mAddress_AutoCompleteTextView;
 	private TextView mGo_TextView;
@@ -206,6 +205,4 @@ public class SetTargetActivity extends MICloseBaseActivity {
 
 		startService(serviceIntent);
 	}
-
-	
 }
