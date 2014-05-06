@@ -16,7 +16,7 @@ import android.preference.PreferenceManager;
 import android.widget.Toast;
 
 import com.boazsh.m_i_close.app.R;
-import com.boazsh.m_i_close.app.services.LocationService; //boaz
+import com.boazsh.m_i_close.app.services.LocationService;
 
 public abstract class MICloseBaseActivity extends Activity {
 	
