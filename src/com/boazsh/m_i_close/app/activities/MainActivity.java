@@ -8,11 +8,11 @@ import android.widget.TextView;
 import com.boazsh.m_i_close.app.R;
 
 
-//TODO: Allow picking address from map
+//TODO: Allow picking address from map - Next Release
 //TODO: Show target on map
 //TODO: Bug: Semicircles are not totally rounded on Moshe's phone
 //TODO: Powersave mode
-//TODO: Auto complete address field
+//TODO: Auto complete address field - Done
 //TODO: Show distance from target
 
 
@@ -25,7 +25,7 @@ public class MainActivity extends MICloseBaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main1);
+        setContentView(R.layout.activity_main);
 
         
         boolean isAlarmSet = mSharedPreferences.getBoolean(ALARM_SET_KEY, false);

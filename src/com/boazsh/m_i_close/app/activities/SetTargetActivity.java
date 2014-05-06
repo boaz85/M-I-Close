@@ -38,7 +38,7 @@ public class SetTargetActivity extends MICloseBaseActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_set_target1);
+		setContentView(R.layout.activity_set_target);
 
 		mLocationString = "";
 		

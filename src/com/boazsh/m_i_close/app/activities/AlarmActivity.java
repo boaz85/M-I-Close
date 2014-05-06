@@ -75,7 +75,7 @@ public class AlarmActivity extends MICloseBaseActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_alarm1);
+		setContentView(R.layout.activity_alarm);
 
 		mStopAlarm_TextView = (TextView) findViewById(R.id.stopAlarmTextView);
 		mNewAlarm_TextView = (TextView) findViewById(R.id.newAlarmTextView);
