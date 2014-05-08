@@ -6,6 +6,6 @@
 		<corners 
 		android:bottomRightRadius="0dp"
 		android:bottomLeftRadius="0dp"
-		android:topLeftRadius="@dimen/popup_button_width"
-		android:topRightRadius="@dimen/popup_button_width"/>
+		android:topLeftRadius="@dimen/popup_corner_radius"
+		android:topRightRadius="@dimen/popup_corner_radius"/>
 </shape>

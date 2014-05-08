@@ -9,11 +9,11 @@ import com.boazsh.m_i_close.app.R;
 
 
 //TODO: Allow picking address from map - Next Release
-//TODO: Show target on map
-//TODO: Bug: Semicircles are not totally rounded on Moshe's phone
+//TODO: Show target on map - Done
+//TODO: Bug: Semicircles are not totally rounded on Moshe's phone - fixed(?)
 //TODO: Powersave mode
 //TODO: Auto complete address field - Done
-//TODO: Show distance from target
+//TODO: Show distance from target - Next Release
 
 
 public class MainActivity extends MICloseBaseActivity {

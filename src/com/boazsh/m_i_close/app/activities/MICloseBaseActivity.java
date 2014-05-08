@@ -1,15 +1,15 @@
 package com.boazsh.m_i_close.app.activities;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.location.Location;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
+import android.support.v4.app.FragmentActivity;
 import android.widget.Toast;
 
 import com.boazsh.m_i_close.app.R;
-import com.boazsh.m_i_close.app.services.LocationService;
+import com.boazsh.m_i_close.app.geofence.GeofenceStore;
 
 public abstract class MICloseBaseActivity extends Activity {
 	
@@ -24,69 +24,26 @@ public abstract class MICloseBaseActivity extends Activity {
 	public static final String TARGET_DISTANCE_KEY = "target_distance";
 	
 	public static final String ALARM_SET_KEY = "alarm_set";
-	
-	
 
 	protected SharedPreferences mSharedPreferences;
 	protected Editor mPreferencesEditor;
 	protected long mLastBackClickTime;
 	
-	static void setVisible() {
-		
-		LocationService.appIsVisible = true;
-	}
-	
-	static void setInvisible() {
-		
-		LocationService.appIsVisible = true;
-	}
-	
-	@Override
-	protected void onResume() {
-	  super.onResume();
-	  setVisible();
-	}
 
-	@Override
-	protected void onPause() {
-	  super.onPause();
-	  setInvisible();
-	}
-	
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         initSharedPreferences();
-        mLastBackClickTime = 0;
 	}
-	
-	public static Location createLocationObject(double latitude, double longitude) {
-    	
-    	Location location = new Location(MICLOSE_PROVIDER);
-    	location.setLatitude(latitude);
-    	location.setLongitude(longitude);
-    	
-    	return location;
-    }
 	
 	protected void initSharedPreferences() {
 		
-		mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+		mSharedPreferences = getSharedPreferences(
+				GeofenceStore.SHARED_PREFERENCE_NAME,
+                Context.MODE_PRIVATE);
 		mPreferencesEditor = mSharedPreferences.edit();
 	}
-	
-	protected void clearSharedPreferences() {
-		
-		if (mSharedPreferences == null) {
-			
-			initSharedPreferences();
-		}
-		
-		mPreferencesEditor.clear();
-		mPreferencesEditor.apply();
-	}
-	
+
 	protected void backPressed() {
 		
 		int doubleTapTimeout = getResources().getInteger(R.integer.double_tap_timeout);
@@ -108,6 +65,7 @@ public abstract class MICloseBaseActivity extends Activity {
 		
         return getResources().getInteger(id);
     }
+	
 	
 	protected void showToast(int stringId, boolean isLong) {
 		

@@ -3,6 +3,7 @@
 
     <dimen name="popup_button_text_size">20sp</dimen>
     <dimen name="popup_button_width">150dp</dimen>
+    <dimen name="popup_corner_radius">300dp</dimen>
     <dimen name="popup_button_hight">75dp</dimen>
 
     </resources>

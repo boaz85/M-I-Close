@@ -47,7 +47,7 @@
         android:paddingLeft="15dp"
         android:paddingRight="15dp"
         android:progress="50"
-        android:progressDrawable="@drawable/seekbar_progress"
+        android:progressDrawable="@drawable/seekbar_progress_bar"
         android:thumb="@drawable/shape_circle_dark_turquoise"
         android:max="@integer/seekBar_max_value" />
     

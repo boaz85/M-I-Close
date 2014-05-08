@@ -4,8 +4,8 @@
 		<solid android:color="@color/turquoise"/>
 		
 		<corners 
-		android:bottomRightRadius="@dimen/popup_button_width"
-		android:bottomLeftRadius="@dimen/popup_button_width"
+		android:bottomRightRadius="@dimen/popup_corner_radius"
+		android:bottomLeftRadius="@dimen/popup_corner_radius"
 		android:topLeftRadius="0dp"
 		android:topRightRadius="0dp"/>
 </shape>

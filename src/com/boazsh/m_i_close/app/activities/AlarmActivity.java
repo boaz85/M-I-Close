@@ -1,15 +1,19 @@
 package com.boazsh.m_i_close.app.activities;
 
 import com.boazsh.m_i_close.app.R;
+import com.boazsh.m_i_close.app.geofence.GeofenceRemover;
 import com.boazsh.m_i_close.app.services.AlarmService;
+import com.boazsh.m_i_close.app.geofence.GeofenceWrapper;
+import com.boazsh.m_i_close.app.geofence.GeofenceStore;
 import com.boazsh.m_i_close.app.services.AlarmServiceMessage;
-import com.boazsh.m_i_close.app.services.LocationService;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -81,9 +85,11 @@ public class AlarmActivity extends MICloseBaseActivity {
 		mNewAlarm_TextView = (TextView) findViewById(R.id.newAlarmTextView);
 		mCancelAlarm_TextView = (TextView) findViewById(R.id.cancelAlarmTextView);
 
-		double latitude = mSharedPreferences.getFloat(TARGET_LATITUDE_KEY, -100);
-		double longitude = mSharedPreferences.getFloat(TARGET_LONGITUDE_KEY,-100);
-		mTargetDistance = mSharedPreferences.getInt(TARGET_DISTANCE_KEY, -1);
+		GeofenceStore target = new GeofenceStore(AlarmActivity.this);
+   
+		double latitude = target.getGeofence().getLatitude();
+		double longitude = target.getGeofence().getLongitude();
+		mTargetDistance = (int) target.getGeofence().getRadius();
 		// TODO: Validate values!
 
 		createMapObject(latitude, longitude);
@@ -96,9 +102,11 @@ public class AlarmActivity extends MICloseBaseActivity {
 			@Override
 			public void onClick(View arg0) {
 
-				clearSharedPreferences();
+				GeofenceRemover remover = new GeofenceRemover(AlarmActivity.this);
+				remover.setInProgressFlag(false);
+				remover.removeGeofencesById(GeofenceWrapper.GEOFENCE_ID);
+
 				showToast(R.string.alarm_canceled, true);
-				stopService(new Intent(AlarmActivity.this, LocationService.class));
 				startActivity(new Intent(AlarmActivity.this, MainActivity.class));
 			}
 		});
@@ -119,12 +127,12 @@ public class AlarmActivity extends MICloseBaseActivity {
 			public void onClick(View v) {
 
 				// Stop alarm service
-				Intent stopAlarmIntent = new Intent(ALARM_ACTIVITY_INTENT_ACTION);
+				Intent stopAlarmIntent = new Intent("ALARM_STOPPED_ACTION");
 				sendBroadcast(stopAlarmIntent);
 
-				// Stop location service
-				Intent stopServiceIntent = new Intent(AlarmActivity.this, LocationService.class);
-				stopService(stopServiceIntent);
+				GeofenceRemover remover = new GeofenceRemover(AlarmActivity.this);
+				remover.setInProgressFlag(false);
+				remover.removeGeofencesById(GeofenceWrapper.GEOFENCE_ID);
 
 				popOut(mStopAlarm_TextView);
 				popIn(mNewAlarm_TextView, false);
@@ -137,7 +145,8 @@ public class AlarmActivity extends MICloseBaseActivity {
 		super.onResume();
 
 		IntentFilter filter = new IntentFilter();
-		filter.addAction(AlarmService.ALARM_SERVICE_INTENT_ACTION);
+		//TODO Set constant
+		filter.addAction(ALARM_ACTIVITY_INTENT_ACTION);
 		registerReceiver(mAlarmActivitytBroadcastReceiver, filter);
 
 		mIsAlarmOn = mSharedPreferences.getBoolean(ALARM_STARTED_KEY, false);
@@ -208,6 +217,11 @@ public class AlarmActivity extends MICloseBaseActivity {
         circleOptions.fillColor(radiusFillColor).center(userLatLng).strokeWidth(2);
         circleOptions.strokeColor(radiusStrokeColor).radius(mTargetDistance);
         map.addCircle(circleOptions);
+        
+        
+        MarkerOptions markerOptions = new MarkerOptions().position(userLatLng).title("Your Target");
+        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));
+        map.addMarker(markerOptions);
 
         CameraUpdate center = CameraUpdateFactory.newLatLng(userLatLng);
         map.moveCamera(center);
