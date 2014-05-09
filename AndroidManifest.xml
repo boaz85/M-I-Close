@@ -74,7 +74,7 @@
         <uses-library android:name="com.google.android.maps" />
 
         <receiver
-            android:name="com.boazsh.m_i_close.app.LocationBroadcastReceiver"
+            android:name="com.boazsh.m_i_close.app.helpers.LocationBroadcastReceiver"
             android:enabled="true"
             android:exported="false" >
             <intent-filter>
