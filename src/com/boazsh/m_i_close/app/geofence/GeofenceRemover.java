@@ -90,25 +90,6 @@ public class GeofenceRemover implements
     }
 
 
-    private void continueRemoveGeofences() {
-    	
-        switch (mRequestType) {
-
-            case INTENT :
-            	
-                mLocationClient.removeGeofences(mCurrentIntent, this);
-                break;
-
-            case LIST :
-            	
-            	List<String> currentGeofenceIds = new ArrayList<String>();
-            	currentGeofenceIds.add(mCurrentGeofenceId);
-                mLocationClient.removeGeofences(currentGeofenceIds, this);
-                break;
-        }
-    }
-
-
     private void requestConnection() {
     	
         getLocationClient().connect();
@@ -161,6 +142,9 @@ public class GeofenceRemover implements
 
             msg = mContext.getString(R.string.remove_geofences_id_success,
                     Arrays.toString(geofenceRequestIds));
+            
+            GeofenceStore geofenceStore = new GeofenceStore(mContext);
+            geofenceStore.clearGeofence(mCurrentGeofenceId);
 
         } else {
 
@@ -203,7 +187,22 @@ public class GeofenceRemover implements
     public void onConnected(Bundle arg0) {
 
         Log.d(GeofenceUtils.APPTAG, mContext.getString(R.string.connected));
-        continueRemoveGeofences();
+        
+        switch (mRequestType) {
+
+        case INTENT :
+        	
+            mLocationClient.removeGeofences(mCurrentIntent, this);
+            break;
+
+        case LIST :
+        	
+        	List<String> currentGeofenceIds = new ArrayList<String>();
+        	currentGeofenceIds.add(mCurrentGeofenceId);
+            mLocationClient.removeGeofences(currentGeofenceIds, this);
+            break;
+        }
+       
     }
 
 

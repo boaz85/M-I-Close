@@ -1,7 +1,6 @@
 package com.boazsh.m_i_close.app.geofence;
 
 import com.boazsh.m_i_close.app.R;
-import com.boazsh.m_i_close.app.services.AlarmService;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.common.GooglePlayServicesClient.ConnectionCallbacks;
@@ -116,7 +115,7 @@ public class GeofenceRequester
                            .putExtra(GeofenceUtils.EXTRA_GEOFENCE_STATUS, msg);
         }
 
-        LocalBroadcastManager.getInstance(mActivity).sendBroadcast(broadcastIntent);
+        mActivity.sendBroadcast(broadcastIntent);
         requestDisconnection();
     }
 
@@ -159,7 +158,7 @@ public class GeofenceRequester
 
         } else {
 
-            Intent intent = new Intent(mActivity, AlarmService.class);
+            Intent intent = new Intent("com.boazsh.m_i_close_app.ALARM_START");
             
             Location currentLocation = mLocationClient.getLastLocation();
             GeofenceStore target = new GeofenceStore(mActivity);
@@ -168,7 +167,7 @@ public class GeofenceRequester
             float distance = currentLocation.distanceTo(targetLocation);
             intent.putExtra("TARGET_DISTANCE_KEY", distance);
             
-            return PendingIntent.getService(
+            return PendingIntent.getBroadcast(
                     mActivity,
                     0,
                     intent,

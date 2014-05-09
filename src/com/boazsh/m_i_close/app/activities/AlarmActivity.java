@@ -36,9 +36,9 @@ public class AlarmActivity extends MICloseBaseActivity {
 	private static final double MAX_ZOOM_MINUS_TWO = 13;
 	private static final double DIV_FACTOR = 10000;
 
-	private TextView mStopAlarm_TextView;
-	private TextView mNewAlarm_TextView;
-	private TextView mCancelAlarm_TextView;
+	private TextView mStopAlarmTextView;
+	private TextView mNewAlarmTextView;
+	private TextView mCancelAlarmTextView;
 
 	private boolean mIsAlarmOn;
 	private boolean mIsAlarmDone;
@@ -57,15 +57,15 @@ public class AlarmActivity extends MICloseBaseActivity {
 
 			case ALARM_STARTED:
 
-				popOut(mCancelAlarm_TextView);
-				popIn(mStopAlarm_TextView, true);
+				popOut(mCancelAlarmTextView);
+				popIn(mStopAlarmTextView, true);
 
 				break;
 
 			case ALARM_STOPPED:
 
-				popOut(mStopAlarm_TextView);
-				popIn(mNewAlarm_TextView, false);
+				popOut(mStopAlarmTextView);
+				popIn(mNewAlarmTextView, false);
 
 				break;
 
@@ -81,9 +81,9 @@ public class AlarmActivity extends MICloseBaseActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_alarm);
 
-		mStopAlarm_TextView = (TextView) findViewById(R.id.stopAlarmTextView);
-		mNewAlarm_TextView = (TextView) findViewById(R.id.newAlarmTextView);
-		mCancelAlarm_TextView = (TextView) findViewById(R.id.cancelAlarmTextView);
+		mStopAlarmTextView = (TextView) findViewById(R.id.stopAlarmTextView);
+		mNewAlarmTextView = (TextView) findViewById(R.id.newAlarmTextView);
+		mCancelAlarmTextView = (TextView) findViewById(R.id.cancelAlarmTextView);
 
 		GeofenceStore target = new GeofenceStore(AlarmActivity.this);
    
@@ -97,7 +97,7 @@ public class AlarmActivity extends MICloseBaseActivity {
 		/*
 		 * "Alarm Cancel" button clicked.
 		 */
-		mCancelAlarm_TextView.setOnClickListener(new View.OnClickListener() {
+		mCancelAlarmTextView.setOnClickListener(new View.OnClickListener() {
 
 			@Override
 			public void onClick(View arg0) {
@@ -111,7 +111,7 @@ public class AlarmActivity extends MICloseBaseActivity {
 			}
 		});
 
-		mNewAlarm_TextView.setOnClickListener(new View.OnClickListener() {
+		mNewAlarmTextView.setOnClickListener(new View.OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
@@ -121,7 +121,7 @@ public class AlarmActivity extends MICloseBaseActivity {
 			}
 		});
 
-		mStopAlarm_TextView.setOnClickListener(new View.OnClickListener() {
+		mStopAlarmTextView.setOnClickListener(new View.OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
@@ -134,8 +134,8 @@ public class AlarmActivity extends MICloseBaseActivity {
 				remover.setInProgressFlag(false);
 				remover.removeGeofencesById(GeofenceWrapper.GEOFENCE_ID);
 
-				popOut(mStopAlarm_TextView);
-				popIn(mNewAlarm_TextView, false);
+				popOut(mStopAlarmTextView);
+				popIn(mNewAlarmTextView, false);
 			}
 		});
 	}
@@ -154,24 +154,24 @@ public class AlarmActivity extends MICloseBaseActivity {
 
 		if (mIsAlarmOn) {
 
-			mCancelAlarm_TextView.setVisibility(View.INVISIBLE);
-			mNewAlarm_TextView.setVisibility(View.INVISIBLE);
+			mCancelAlarmTextView.setVisibility(View.INVISIBLE);
+			mNewAlarmTextView.setVisibility(View.INVISIBLE);
 
-			popIn(mStopAlarm_TextView, true);
+			popIn(mStopAlarmTextView, true);
 
 		} else if (mIsAlarmDone) {
 
-			mCancelAlarm_TextView.setVisibility(View.INVISIBLE);
-			mStopAlarm_TextView.setVisibility(View.INVISIBLE);
+			mCancelAlarmTextView.setVisibility(View.INVISIBLE);
+			mStopAlarmTextView.setVisibility(View.INVISIBLE);
 			
-			popIn(mNewAlarm_TextView, false);
+			popIn(mNewAlarmTextView, false);
 
 		} else {
 
-			mNewAlarm_TextView.setVisibility(View.INVISIBLE);
-			mStopAlarm_TextView.setVisibility(View.INVISIBLE);
+			mNewAlarmTextView.setVisibility(View.INVISIBLE);
+			mStopAlarmTextView.setVisibility(View.INVISIBLE);
 			
-			popIn(mCancelAlarm_TextView, true);
+			popIn(mCancelAlarmTextView, true);
 		}
 	}
 

@@ -19,7 +19,7 @@ import com.boazsh.m_i_close.app.R;
 public class MainActivity extends MICloseBaseActivity {
 
 
-    private TextView mSetAlarm_TextView;
+    private TextView mSetAlarmTextView;
 
 
     @Override
@@ -35,9 +35,9 @@ public class MainActivity extends MICloseBaseActivity {
         	startActivity(goToAlarmWaitActivityIntent);
         }
         
-        mSetAlarm_TextView = (TextView) findViewById(R.id.setAlarmTextView);
+        mSetAlarmTextView = (TextView) findViewById(R.id.setAlarmTextView);
         
-        mSetAlarm_TextView.setOnClickListener(new View.OnClickListener() {
+        mSetAlarmTextView.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View arg0) {

@@ -10,15 +10,17 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.FragmentActivity;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.AutoCompleteTextView;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 
 import java.io.IOException;
@@ -43,12 +45,12 @@ public class SetTargetActivity extends MICloseBaseActivity {
 	private static final String WEB_API_KEY = "AIzaSyBG3ZEQRc1AhXgeIV9dsSUo7mY7FfhgjV8";
 	private static final long GEOFENCE_EXPIRATION = Geofence.NEVER_EXPIRE;
 
-	private SeekBar mDistance_SeekBar;
-	private AutoCompleteTextView mAddress_AutoCompleteTextView;
-	private TextView mGo_TextView;
-	private TextView mKilometers_TextView;
+	private SeekBar mDistanceSeekBar;
+	private AutoCompleteTextView mAddressAutoCompleteTextView;
+	private TextView mGoTextView;
+	private TextView mKilometersTextView;
+	
 	private String mLocationString;
-
 	private int mTargetDistance;
 	private int mSeekBarMultiFactor;
     private GeofenceUtils.REQUEST_TYPE mRequestType;
@@ -80,17 +82,19 @@ public class SetTargetActivity extends MICloseBaseActivity {
 		int seekBarInitValue = getIntegerResource(R.integer.seekBar_init_value);
 		mSeekBarMultiFactor = getIntegerResource(R.integer.seekBar_multi_factor);
 		
-		mDistance_SeekBar = (SeekBar) findViewById(R.id.targetDistanceSeekBar);
-		mGo_TextView = (TextView) findViewById(R.id.goTextView);
-		mAddress_AutoCompleteTextView = (AutoCompleteTextView) findViewById(R.id.targetAddressEditText);
-		mKilometers_TextView = (TextView) findViewById(R.id.metersNumberTextView);
+		mDistanceSeekBar = (SeekBar) findViewById(R.id.targetDistanceSeekBar);
+		mGoTextView = (TextView) findViewById(R.id.goTextView);
+		mAddressAutoCompleteTextView = (AutoCompleteTextView) findViewById(R.id.targetAddressEditText);
+		mKilometersTextView = (TextView) findViewById(R.id.metersNumberTextView);
 		
-		mAddress_AutoCompleteTextView.setThreshold(3);
-		mAddress_AutoCompleteTextView.addTextChangedListener(getAddress_AutoCompleteTextViewTextChangedListener());
-		mDistance_SeekBar.setProgress(seekBarInitValue / mSeekBarMultiFactor);
-		mKilometers_TextView.setText(String.valueOf(seekBarInitValue));
-		mGo_TextView.setOnClickListener(getGo_TextViewOnClickListener());
-		mDistance_SeekBar.setOnSeekBarChangeListener(getDistance_SeekBarOnSeekBarChangeListener());
+		mAddressAutoCompleteTextView.setThreshold(3);
+		mAddressAutoCompleteTextView.addTextChangedListener(getAddressAutoCompleteTextViewTextChangedListener());
+		mAddressAutoCompleteTextView.setOnEditorActionListener(getAddressAutoCompleteTextViewOnEditorActionListener());
+		
+		mDistanceSeekBar.setProgress(seekBarInitValue / mSeekBarMultiFactor);
+		mKilometersTextView.setText(String.valueOf(seekBarInitValue));
+		mGoTextView.setOnClickListener(getGoTextViewOnClickListener());
+		mDistanceSeekBar.setOnSeekBarChangeListener(getDistanceSeekBarOnSeekBarChangeListener());
 	}
 	
 	@Override
@@ -145,8 +149,22 @@ public class SetTargetActivity extends MICloseBaseActivity {
                break;
         }
     }
+	
+	private OnEditorActionListener getAddressAutoCompleteTextViewOnEditorActionListener() {
+		
+		return new OnEditorActionListener() {
+			   
+			@Override
+			public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+				if (actionId == EditorInfo.IME_ACTION_GO) {
+					mGoTextView.performClick();
+			    }
+			       return false;
+			}
+		};
+	}
     
-	private View.OnClickListener getGo_TextViewOnClickListener() {
+	private View.OnClickListener getGoTextViewOnClickListener() {
 		
 		return new View.OnClickListener() {
 			@Override
@@ -159,7 +177,7 @@ public class SetTargetActivity extends MICloseBaseActivity {
 					return;
 				}
 
-				mTargetDistance = (mDistance_SeekBar.getProgress() + 1)
+				mTargetDistance = (mDistanceSeekBar.getProgress() + 1)
 						* mSeekBarMultiFactor;
 
 		        mRequestType = GeofenceUtils.REQUEST_TYPE.ADD;
@@ -198,16 +216,12 @@ public class SetTargetActivity extends MICloseBaseActivity {
 		            Toast.makeText(SetTargetActivity.this, R.string.add_geofences_already_requested_error,
 		                        Toast.LENGTH_LONG).show();
 		        }
-		        
-		        Intent intent = new Intent(SetTargetActivity.this, AlarmActivity.class);
-				startActivity(intent);
-				
 			}
 		};
 	}
 	
 	
-	private TextWatcher getAddress_AutoCompleteTextViewTextChangedListener() {
+	private TextWatcher getAddressAutoCompleteTextViewTextChangedListener() {
 		
 		return new TextWatcher() {
 
@@ -229,14 +243,14 @@ public class SetTargetActivity extends MICloseBaseActivity {
 		};
 	}
 	
-	private SeekBar.OnSeekBarChangeListener getDistance_SeekBarOnSeekBarChangeListener() {
+	private SeekBar.OnSeekBarChangeListener getDistanceSeekBarOnSeekBarChangeListener() {
 		
 		return new SeekBar.OnSeekBarChangeListener() {
 
 			public void onProgressChanged(SeekBar seekBar,
 					int progress, boolean fromUser) {
 
-				mKilometers_TextView.setText(String
+				mKilometersTextView.setText(String
 						.valueOf((progress + 1) * mSeekBarMultiFactor));
 			}
 
@@ -257,7 +271,7 @@ public class SetTargetActivity extends MICloseBaseActivity {
 		String autoCompleteRequestUrl;
 		String input;
 		
-		search_text = mAddress_AutoCompleteTextView.getText().toString().split(",");
+		search_text = mAddressAutoCompleteTextView.getText().toString().split(",");
 
 		try {
 			
@@ -277,7 +291,7 @@ public class SetTargetActivity extends MICloseBaseActivity {
 		if (search_text.length <= 1) {
 
 			Log.d("URL", autoCompleteRequestUrl);
-			DataParser parse = new DataParser(getApplicationContext(), autoCompleteRequestUrl, mAddress_AutoCompleteTextView);
+			DataParser parse = new DataParser(getApplicationContext(), autoCompleteRequestUrl, mAddressAutoCompleteTextView);
 			parse.execute();
 		}
 	}
@@ -290,7 +304,7 @@ public class SetTargetActivity extends MICloseBaseActivity {
 		List<Address> addresses = null;
 
 		if (mLocationString.equals("")) {
-			mLocationString = mAddress_AutoCompleteTextView.getText()
+			mLocationString = mAddressAutoCompleteTextView.getText()
 					.toString();
 		}
 
@@ -301,7 +315,7 @@ public class SetTargetActivity extends MICloseBaseActivity {
 
 		try {
 			addresses = geocoder.getFromLocationName(
-					mAddress_AutoCompleteTextView.getText().toString(), 1);
+					mAddressAutoCompleteTextView.getText().toString(), 1);
 
 		} catch (IllegalArgumentException e) {
 

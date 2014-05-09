@@ -99,6 +99,7 @@ int id stopAlarm_button 0x7f060006
 int id targetAddressEditText 0x7f06000b
 int id targetDistanceSeekBar 0x7f06000c
 int id terrain 0x7f060003
+int integer animation_duration 0x7f080005
 int integer double_tap_timeout 0x7f080004
 int integer google_play_services_version 0x7f080000
 int integer seekBar_init_value 0x7f080001
