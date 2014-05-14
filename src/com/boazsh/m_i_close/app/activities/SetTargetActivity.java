@@ -2,12 +2,14 @@ package com.boazsh.m_i_close.app.activities;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.location.Address;
 import android.location.Geocoder;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.text.Editable;
@@ -18,14 +20,19 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AutoCompleteTextView;
+import android.widget.RelativeLayout;
+import android.widget.RelativeLayout.LayoutParams;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 
 import java.io.IOException;
-import java.net.URLEncoder;
 import java.util.List;
+import java.util.Locale;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import com.boazsh.m_i_close.app.R;
 import com.boazsh.m_i_close.app.geofence.GeofenceRemover;
@@ -34,15 +41,13 @@ import com.boazsh.m_i_close.app.geofence.GeofenceUtils;
 import com.boazsh.m_i_close.app.geofence.GeofenceWrapper;
 import com.boazsh.m_i_close.app.geofence.GeofenceStore;
 import com.boazsh.m_i_close.app.helpers.Constants;
-import com.boazsh.m_i_close.app.helpers.DataParser;
+import com.boazsh.m_i_close.app.helpers.AutoCompleteTask;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.location.Geofence;
 
 public class SetTargetActivity extends MICloseBaseActivity {
 
-	
-	private static final String WEB_API_KEY = "AIzaSyBG3ZEQRc1AhXgeIV9dsSUo7mY7FfhgjV8";
 	private static final long GEOFENCE_EXPIRATION = Geofence.NEVER_EXPIRE;
 
 	private SeekBar mDistanceSeekBar;
@@ -51,28 +56,26 @@ public class SetTargetActivity extends MICloseBaseActivity {
 	private TextView mKilometersTextView;
 	
 	private String mLocationString;
-	private int mTargetDistance;
 	private int mSeekBarMultiFactor;
     private GeofenceUtils.REQUEST_TYPE mRequestType;
     private GeofenceStore mGeofenceStore;
     private Geofence mCurrentGeofence;
     private GeofenceRequester mGeofenceRequester;
     private GeofenceRemover mGeofenceRemover;
-    private GeofenceWrapper mGeofenceWrapper;
     private GeofenceStatusReceiver mBroadcastReceiver;
     private IntentFilter mIntentFilter;
+	private Address mTargetAddress;
 	
-
-	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_set_target);
-		
+
 		mBroadcastReceiver = new GeofenceStatusReceiver();
         mIntentFilter = new IntentFilter();
         mIntentFilter.addAction(GeofenceUtils.ACTION_GEOFENCES_ADDED);
         mIntentFilter.addAction(GeofenceUtils.ACTION_GEOFENCE_ERROR);
         
+        mTargetAddress = null;
         mGeofenceStore = new GeofenceStore(this);
         mCurrentGeofence = null;
         mGeofenceRequester = new GeofenceRequester(this);
@@ -86,6 +89,31 @@ public class SetTargetActivity extends MICloseBaseActivity {
 		mGoTextView = (TextView) findViewById(R.id.goTextView);
 		mAddressAutoCompleteTextView = (AutoCompleteTextView) findViewById(R.id.targetAddressEditText);
 		mKilometersTextView = (TextView) findViewById(R.id.metersNumberTextView);
+		
+		String lng = Locale.getDefault().getLanguage();
+		if (lng.equals("iw")) {
+			
+			TextView setDistance = (TextView) findViewById(R.id.setAlarmTextView);
+			setDistance.setGravity(android.view.Gravity.RIGHT);
+			
+			TextView metersTextView = (TextView) findViewById(R.id.metersTextView);
+			
+			LayoutParams metersTextViewLayoutParams = (LayoutParams) metersTextView.getLayoutParams();
+			
+			metersTextViewLayoutParams.addRule(RelativeLayout.ALIGN_RIGHT, 0);
+			metersTextViewLayoutParams.addRule(RelativeLayout.ALIGN_LEFT, R.id.targetAddressEditText);
+			
+			LayoutParams metersNumberTextViewLayoutParams = (LayoutParams) mKilometersTextView.getLayoutParams();
+			
+			metersNumberTextViewLayoutParams.addRule(RelativeLayout.LEFT_OF, 0);
+			metersNumberTextViewLayoutParams.addRule(RelativeLayout.ALIGN_LEFT, 0);
+			metersNumberTextViewLayoutParams.addRule(RelativeLayout.RIGHT_OF, R.id.metersTextView);
+			metersNumberTextViewLayoutParams.setMargins(5, 0, 0, 0);
+			
+			metersTextView.setLayoutParams(metersTextViewLayoutParams);
+			mKilometersTextView.setLayoutParams(metersNumberTextViewLayoutParams);
+		}
+		
 		
 		mAddressAutoCompleteTextView.setThreshold(3);
 		mAddressAutoCompleteTextView.addTextChangedListener(getAddressAutoCompleteTextViewTextChangedListener());
@@ -130,6 +158,7 @@ public class SetTargetActivity extends MICloseBaseActivity {
 
                             mGeofenceRemover.setInProgressFlag(false);
                             mGeofenceRemover.removeGeofencesById(GeofenceWrapper.GEOFENCE_ID);
+                            mGeofenceStore.clearGeofence(GeofenceWrapper.GEOFENCE_ID);
                         }
                         
                         break;
@@ -137,7 +166,7 @@ public class SetTargetActivity extends MICloseBaseActivity {
                     default:
 
                         Log.d(GeofenceUtils.APPTAG, getString(R.string.no_resolution));
-                        //TODO: Show error!
+                        //TODO: Show error!s
                 }
 
             default:
@@ -149,6 +178,7 @@ public class SetTargetActivity extends MICloseBaseActivity {
                break;
         }
     }
+	
 	
 	private OnEditorActionListener getAddressAutoCompleteTextViewOnEditorActionListener() {
 		
@@ -163,21 +193,54 @@ public class SetTargetActivity extends MICloseBaseActivity {
 			}
 		};
 	}
+
     
 	private View.OnClickListener getGoTextViewOnClickListener() {
 		
 		return new View.OnClickListener() {
+			
 			@Override
 			public void onClick(View v) {
+				
+				if (!isLocationAvailable()) {
+					
+					return;
+				}
 
-				Address locationAddress = geocodeAddress();
+				mLocationString = mAddressAutoCompleteTextView.getText().toString();
+				
+				if (mLocationString.equals("")) {
+	    			
+	    			showToast(R.string.you_need_to_type_address, true);
+	    			return;
+	    		}
 
-				if (locationAddress == null) {
+				GeocodeTask geocodeTask = new GeocodeTask();
+				geocodeTask.execute();
+				
+				boolean result = false;
+				
+				try {
+					result = geocodeTask.get(40, TimeUnit.SECONDS);
+					
+				} catch (TimeoutException e) {
+					
+					showToast(R.string.connection_timeout, true);
+					return;
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (ExecutionException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				if (result == false || mTargetAddress == null) {
 
 					return;
 				}
 
-				mTargetDistance = (mDistanceSeekBar.getProgress() + 1)
+				int targetDistance = (mDistanceSeekBar.getProgress() + 1)
 						* mSeekBarMultiFactor;
 
 		        mRequestType = GeofenceUtils.REQUEST_TYPE.ADD;
@@ -187,25 +250,19 @@ public class SetTargetActivity extends MICloseBaseActivity {
 		        	//TODO: Show error
 		            return;
 		        }
-		        
-				if (mGeofenceStore.getGeofence() != null) {
 
-					mGeofenceRemover.setInProgressFlag(false);
-					mGeofenceRemover.removeGeofencesById(GeofenceWrapper.GEOFENCE_ID);
-				}
-				
 				mPreferencesEditor.clear();
-				mPreferencesEditor.apply();
+				mPreferencesEditor.commit();
 
-		        mGeofenceWrapper = new GeofenceWrapper(
-										            locationAddress.getLatitude(),
-										            locationAddress.getLongitude(),
-										            mTargetDistance,
+				GeofenceWrapper geofenceWrapper = new GeofenceWrapper(
+									        		mTargetAddress.getLatitude(),
+									        		mTargetAddress.getLongitude(),
+									        		targetDistance,
 										            GEOFENCE_EXPIRATION,
 										            Geofence.GEOFENCE_TRANSITION_ENTER);
 
-		        mGeofenceStore.setGeofence(mGeofenceWrapper);
-		        mCurrentGeofence = mGeofenceWrapper.getGeofenceObject();
+		        mGeofenceStore.setGeofence(geofenceWrapper);
+		        mCurrentGeofence = geofenceWrapper.getGeofenceObject();
 		        
 		        try {
 		        	
@@ -237,7 +294,8 @@ public class SetTargetActivity extends MICloseBaseActivity {
 			public void onTextChanged(CharSequence s, int start, int before,
 					int count) {
 
-				getAutoCompleteList();
+				AutoCompleteTask autoCompleteTask = new AutoCompleteTask(getApplicationContext(), mAddressAutoCompleteTextView);
+				autoCompleteTask.execute();
 
 			}
 		};
@@ -262,80 +320,6 @@ public class SetTargetActivity extends MICloseBaseActivity {
 
 			}
 		};
-	}
-	
-	
-	private void getAutoCompleteList() {
-		
-		String[] search_text;
-		String autoCompleteRequestUrl;
-		String input;
-		
-		search_text = mAddressAutoCompleteTextView.getText().toString().split(",");
-
-		try {
-			
-			input = URLEncoder.encode(search_text[0], "utf8");
-			
-		} catch (Exception e) {
-			
-			Log.e(MICLOSE_LOG_LABEL, "Failed to encode user address");
-			input = null;
-		}
-		
-		autoCompleteRequestUrl = "https://maps.googleapis.com/maps/api/place/autocomplete/json";
-		autoCompleteRequestUrl += "?input=" + input;
-		autoCompleteRequestUrl += "&sensor=true&language=iw&";
-		autoCompleteRequestUrl += "key=" + WEB_API_KEY;
-		
-		if (search_text.length <= 1) {
-
-			Log.d("URL", autoCompleteRequestUrl);
-			DataParser parse = new DataParser(getApplicationContext(), autoCompleteRequestUrl, mAddressAutoCompleteTextView);
-			parse.execute();
-		}
-	}
-	
-
-	private Address geocodeAddress() {
-
-		Geocoder geocoder = new Geocoder(getApplicationContext());
-
-		List<Address> addresses = null;
-
-		if (mLocationString.equals("")) {
-			mLocationString = mAddressAutoCompleteTextView.getText()
-					.toString();
-		}
-
-		if (mLocationString.equals("")) {
-			showToast(R.string.you_need_to_type_address, true);
-			return null;
-		}
-
-		try {
-			addresses = geocoder.getFromLocationName(
-					mAddressAutoCompleteTextView.getText().toString(), 1);
-
-		} catch (IllegalArgumentException e) {
-
-			Log.e(Constants.APP_LOG_TAG, "Input address is not valid");
-			showToast(R.string.internal_error, true);
-			return null;
-
-		} catch (IOException e) {
-
-			Log.e(Constants.APP_LOG_TAG, "Network connection is not available");
-			showToast(R.string.no_internet_connection, true);
-			return null;
-		}
-
-		if (addresses.size() == 0) {
-			showToast(R.string.adress_not_found, true);
-			return null;
-		}
-
-		return addresses.get(0);
 	}
 	
 	public boolean servicesConnected() {
@@ -390,7 +374,7 @@ public class SetTargetActivity extends MICloseBaseActivity {
         	
         	Intent alarmActivityIntent = new Intent(SetTargetActivity.this,
 					AlarmActivity.class);
-        	
+
 			startActivity(alarmActivityIntent);
         }
 
@@ -421,4 +405,74 @@ public class SetTargetActivity extends MICloseBaseActivity {
         }
     }
 
+    
+    public class GeocodeTask extends AsyncTask<Void, Integer, Boolean> {
+
+    	
+    	private Context mApplicationContext;
+    	private Geocoder mGeocoder;
+    	List<Address> mAddresses;
+		private ProgressDialog pd;
+
+    	
+    	@Override
+    	protected void onPreExecute() {
+    		
+    		mApplicationContext = getApplicationContext();
+    		mGeocoder = new Geocoder(mApplicationContext);
+    		mAddresses = null;
+    		
+    		pd = new ProgressDialog(SetTargetActivity.this);
+			pd.setTitle("Processing...");
+			pd.setMessage("Please wait.");
+			pd.setCancelable(false);
+			pd.setIndeterminate(true);
+			pd.show();
+    	}
+    	
+    	@Override
+    	protected Boolean doInBackground(Void... params) {
+
+    		try {
+    			mAddresses = mGeocoder.getFromLocationName(mLocationString, 1);
+
+    		} catch (IllegalArgumentException e) {
+
+    			Log.e(Constants.APP_LOG_TAG, "Input address is not valid");
+    			showToast(R.string.internal_error, true);
+    			return false;
+
+    		} catch (IOException e) {
+
+    			Log.e(Constants.APP_LOG_TAG, "Network connection is not available");
+    			Log.e(Constants.APP_LOG_TAG, e.getStackTrace().toString());
+    			showToast(R.string.no_internet_connection, true);
+    			return false;
+    		}
+
+    		if (mAddresses.size() == 0) {
+    			showToast(R.string.adress_not_found, true);
+    			return false;
+    		}
+
+    		mTargetAddress = mAddresses.get(0);
+    		return true;
+    	}
+
+    	@Override
+    	protected void onPostExecute(Boolean result) {
+    		
+    		if (pd!=null) {
+    			
+				pd.dismiss();
+			}
+    		
+    	}
+    	
+    	protected void showToast(int stringId, boolean isLong) {
+    		
+    		Toast.makeText(mApplicationContext, mApplicationContext.getResources().getString(stringId), 
+    				isLong ? Toast.LENGTH_LONG : Toast.LENGTH_SHORT).show();
+    	}
+    }
 }

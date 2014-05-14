@@ -17,6 +17,7 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Binder;
 import android.os.IBinder;
+import android.os.Vibrator;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
@@ -39,11 +40,13 @@ public class AlarmService extends Service {
 	private NotificationManager mNotificationManager;
 	protected SharedPreferences mSharedPreferences;
 	protected Editor mPreferencesEditor;
+	private Vibrator mVibrator;
 
 	private final BroadcastReceiver mAlarmServiceBroadcastReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 
+			mVibrator.cancel();
 			mPlayer.stop();
 
 			mPreferencesEditor.putBoolean(AlarmActivity.ALARM_STARTED_KEY, false);
@@ -59,6 +62,7 @@ public class AlarmService extends Service {
 			stopSelf();
 		}
 	};
+	
 	
 
 	@Override
@@ -168,6 +172,11 @@ public class AlarmService extends Service {
 
 		mPlayer = MediaPlayer.create(getApplicationContext(), alert);
 		mPlayer.start();
+		
+		mVibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+
+		long vibrationPattern[] = new long[]{0,1000, 1000};
+		mVibrator.vibrate(vibrationPattern, 1);
 	}
 
 	@Override
@@ -183,7 +192,7 @@ public class AlarmService extends Service {
 		Intent contentIntent = new Intent(this, AlarmActivity.class);
 		Intent stopIntent = new Intent("ALARM_STOPPED_ACTION");
 
-		PendingIntent contentPIntent = PendingIntent.getActivity(this, 345, contentIntent, 0);
+		PendingIntent contentPIntent = PendingIntent.getActivity(this, 456, contentIntent, 0);
 		PendingIntent stopPIIntent = PendingIntent.getBroadcast(this, 0, stopIntent, 0);
 
 		int apiLevel = android.os.Build.VERSION.SDK_INT;

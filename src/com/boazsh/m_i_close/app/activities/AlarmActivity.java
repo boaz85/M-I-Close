@@ -15,6 +15,8 @@ import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import android.app.Fragment;
+import android.app.FragmentManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -31,6 +33,7 @@ public class AlarmActivity extends MICloseBaseActivity {
 	public static final String ALARM_ACTIVITY_INTENT_ACTION = "com.boazsh.m_i_close.app.ALARM_ACTIVITY_BROADCAST";
 	public static final String ALARM_STARTED_KEY = "alarm_started";
 	public static final String ALARM_DONE_KEY = "alarm_done";
+	public static final String BACKUP_FRAGMENT_TAG = "BACKUP";
 	
 	private static final double RANGE = 5.0;
 	private static final double MAX_ZOOM_MINUS_TWO = 13;
@@ -43,6 +46,8 @@ public class AlarmActivity extends MICloseBaseActivity {
 	private boolean mIsAlarmOn;
 	private boolean mIsAlarmDone;
 	private int mTargetDistance;
+	
+	private GeofenceStore mGeofenceStore;
 
 	private final BroadcastReceiver mAlarmActivitytBroadcastReceiver = new BroadcastReceiver() {
 		@Override
@@ -85,19 +90,34 @@ public class AlarmActivity extends MICloseBaseActivity {
 		mNewAlarmTextView = (TextView) findViewById(R.id.newAlarmTextView);
 		mCancelAlarmTextView = (TextView) findViewById(R.id.cancelAlarmTextView);
 
-		GeofenceStore target = new GeofenceStore(AlarmActivity.this);
-   
-		double latitude = target.getGeofence().getLatitude();
-		double longitude = target.getGeofence().getLongitude();
-		mTargetDistance = (int) target.getGeofence().getRadius();
-		// TODO: Validate values!
+		mGeofenceStore = new GeofenceStore(AlarmActivity.this);
+		
+		FragmentManager fm = getFragmentManager();
+        BackUpFragment backUpFragment = (BackUpFragment) fm.findFragmentByTag(BACKUP_FRAGMENT_TAG);
 
-		createMapObject(latitude, longitude);
+        // Backup store data for the case when activity recreated after
+        // geofence store removed (on orientation change for example).
+        if (backUpFragment == null) {
+            // add the fragment
+        	backUpFragment = new BackUpFragment();
+        	
+        	double latitude = mGeofenceStore.getGeofence().getLatitude();
+    		double longitude = mGeofenceStore.getGeofence().getLongitude();
+    		mTargetDistance = (int) mGeofenceStore.getGeofence().getRadius();
+            
+            backUpFragment.setData(mTargetDistance, latitude, longitude);
+            fm.beginTransaction().add(backUpFragment, BACKUP_FRAGMENT_TAG).commit();
+        }
+
+        mTargetDistance = backUpFragment.getDistance();
+		createMapObject(backUpFragment.getLatitude(), backUpFragment.getLongitude());
 
 		/*
 		 * "Alarm Cancel" button clicked.
 		 */
 		mCancelAlarmTextView.setOnClickListener(new View.OnClickListener() {
+
+			
 
 			@Override
 			public void onClick(View arg0) {
@@ -105,6 +125,7 @@ public class AlarmActivity extends MICloseBaseActivity {
 				GeofenceRemover remover = new GeofenceRemover(AlarmActivity.this);
 				remover.setInProgressFlag(false);
 				remover.removeGeofencesById(GeofenceWrapper.GEOFENCE_ID);
+				mGeofenceStore.clearGeofence(GeofenceWrapper.GEOFENCE_ID);
 
 				showToast(R.string.alarm_canceled, true);
 				startActivity(new Intent(AlarmActivity.this, MainActivity.class));
@@ -133,6 +154,7 @@ public class AlarmActivity extends MICloseBaseActivity {
 				GeofenceRemover remover = new GeofenceRemover(AlarmActivity.this);
 				remover.setInProgressFlag(false);
 				remover.removeGeofencesById(GeofenceWrapper.GEOFENCE_ID);
+				mGeofenceStore.clearGeofence(GeofenceWrapper.GEOFENCE_ID);
 
 				popOut(mStopAlarmTextView);
 				popIn(mNewAlarmTextView, false);
@@ -145,7 +167,6 @@ public class AlarmActivity extends MICloseBaseActivity {
 		super.onResume();
 
 		IntentFilter filter = new IntentFilter();
-		//TODO Set constant
 		filter.addAction(ALARM_ACTIVITY_INTENT_ACTION);
 		registerReceiver(mAlarmActivitytBroadcastReceiver, filter);
 
@@ -233,4 +254,36 @@ public class AlarmActivity extends MICloseBaseActivity {
         
         return map;
     }
+	
+	public static class BackUpFragment extends Fragment {
+
+	    private int mTargetDistance;
+	    private double mLongitude;
+	    private double mLatitude;
+
+	    @Override
+	    public void onCreate(Bundle savedInstanceState) {
+	        super.onCreate(savedInstanceState);
+
+	        setRetainInstance(true);
+	    }
+
+	    public void setData(int distance, double latitude, double longitude) {
+	    	mTargetDistance = distance;
+	    	mLatitude = latitude;
+	    	mLongitude = longitude;
+	    }
+
+	    public int getDistance() {
+	        return mTargetDistance;
+	    }
+	    
+	    public double getLatitude() {
+	        return mLatitude;
+	    }
+	    
+	    public double getLongitude() {
+	        return mLongitude;
+	    }
+	}
 }

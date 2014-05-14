@@ -5,15 +5,15 @@
     <AutoCompleteTextView
         android:id="@+id/targetAddressEditText"
         style="@style/MICloseAppTheme.EditText"
-        android:layout_width="300dp"
+        android:layout_width="650dp"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/targetDistanceSeekBar"
         android:layout_alignParentTop="true"
         android:layout_marginLeft="15dp"
-        android:layout_marginTop="38dp"
+        android:layout_marginTop="65dp"
         android:paddingLeft="8dp"
         android:paddingRight="8dp"
-        android:textSize="25sp" />
+        android:textSize="50sp" />
 
     <TextView
         android:id="@+id/setAlarmTextView"
@@ -21,22 +21,22 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/targetAddressEditText"
         android:layout_alignLeft="@+id/targetAddressEditText"
-        android:layout_marginTop="70dp"
+        android:layout_marginTop="190dp"
         android:layout_marginBottom="7dp"
         android:text="@string/how_far_from_target"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textColor="@color/yellow" />
+        android:textColor="@color/yellow"
+        android:textSize="50sp" />
 
     <TextView
         android:id="@+id/goTextView"
         style="@style/MICloseAppTheme.BigButton.GoButton"
-        android:layout_width="180dp"
-        android:layout_height="180dp"
+        android:layout_width="380dp"
+        android:layout_height="380dp"
         android:layout_alignRight="@+id/targetDistanceSeekBar"
         android:layout_alignTop="@+id/targetAddressEditText"
         android:layout_marginRight="8dp"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textColor="@color/yellow"
         android:textSize="60sp" />
 
     <TextView
@@ -48,16 +48,20 @@
         android:layout_below="@+id/targetDistanceSeekBar"
         android:layout_marginTop="5dp"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="@color/turquoise" />
+        android:textColor="@color/turquoise"
+        android:textSize="40sp" />
 
     <TextView
         android:id="@+id/metersTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        
         android:layout_alignBottom="@+id/metersNumberTextView"
         android:text="@string/kilometers"
+        android:layout_marginLeft="8dp"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="@color/turquoise" />
+        android:textColor="@color/turquoise" 
+        android:textSize="40sp"/>
 
     <SeekBar
         android:id="@+id/targetDistanceSeekBar"
@@ -66,7 +70,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/setAlarmTextView"
         android:layout_alignParentLeft="true"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="70dp"
         android:layout_marginRight="36dp"
         android:layout_marginLeft="21dp"
         android:maxHeight="6dip"

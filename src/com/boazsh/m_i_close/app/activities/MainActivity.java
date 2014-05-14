@@ -27,6 +27,7 @@ public class MainActivity extends MICloseBaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        isLocationAvailable();
         
         boolean isAlarmSet = mSharedPreferences.getBoolean(ALARM_SET_KEY, false);
 

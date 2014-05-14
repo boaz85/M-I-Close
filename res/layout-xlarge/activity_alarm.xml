@@ -5,7 +5,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
 
-    <fragment
+    <fragment 
         android:id="@+id/alarm_map1"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -13,35 +13,32 @@
     
     <TextView
         android:id="@+id/newAlarmTextView"
-        style="@style/MICloseAppTheme.SemiCircleButton.Normal"
+        style="@style/MICloseAppTheme.SemiCircleButton.Xlarge"
         android:layout_alignParentBottom="true"
         android:background="@drawable/shape_bottom_semicircle_blue"
-        android:paddingTop="10dp"
+        android:paddingTop="7dp"
         android:text="@string/set_new_alarm"
-        android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="@color/yellow"
         android:visibility="invisible" />
     
     
     <TextView
         android:id="@+id/cancelAlarmTextView"
-        style="@style/MICloseAppTheme.SemiCircleButton.Normal"
+        style="@style/MICloseAppTheme.SemiCircleButton.Xlarge"
         android:layout_alignParentTop="true"
         android:background="@drawable/shape_top_semicircle_turquoise"
-        android:paddingBottom="10dp"
+        android:paddingBottom="23dp"
         android:text="@string/cancel_alarm"
-        android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="@color/purple"
         android:visibility="invisible" />
     
     <TextView
         android:id="@+id/stopAlarmTextView"
-        style="@style/MICloseAppTheme.SemiCircleButton.Normal"
+        style="@style/MICloseAppTheme.SemiCircleButton.Xlarge"
         android:layout_alignParentTop="true"
         android:background="@drawable/shape_top_semicircle_pink"
-        android:paddingBottom="10dp"
+        android:paddingBottom="23dp"
         android:text="@string/stop_alarm"
-        android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="@color/yellow"
         android:visibility="invisible" />
     

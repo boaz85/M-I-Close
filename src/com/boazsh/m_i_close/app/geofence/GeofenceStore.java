@@ -22,6 +22,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.location.Location;
+import android.util.Log;
 
 /**
  * Storage for geofence values, implemented in SharedPreferences.
@@ -131,6 +132,10 @@ public class GeofenceStore {
 
         // Otherwise, return null.
         } else {
+        	
+        	
+        	Log.d(GeofenceUtils.APPTAG, "lat:" + lat + "\nlon: " + lng + "\nradious: " + radius + "\nexpire: " + expirationDuration + "\ntarns: " + transitionType);
+        	
             return null;
         }
     }

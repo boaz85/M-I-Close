@@ -2,31 +2,27 @@
 <resources>
 
     <string name="app_name">M-I-Close</string>
-    <string name="set_alarm">Set\nAlarm</string>
-    <string name="set_new_alarm">New\nAlarm</string>
-    <string name="title_activity_set_target">Set Your target</string>
-    <string name="your_target_address">Your target address</string>
-    <string name="kilometers">Meters</string>
-    <string name="title_activity_alarm">Your Target</string>
-    <string name="stop_alarm">Alarm\nStop</string>
-    <string name="cancel_alarm">Alarm\nCancel</string>
-    <string name="alarm_canceled">Alarm canceled!</string>
-    <string name="press_back_again">Press "Back" again to exit</string>
-    <string name="adress_not_found">Address not found!</string>
-    <string name="no_internet_connection">No internet connection available!</string>
-    <string name="internal_error">Internal Error!</string>
-    <string name="you_need_to_type_address">You need to type an address</string>
-    <string name="how_far_from_target">How far from target\nwould you like to be noticed?</string>
-    <string name="go">Go!</string>
-    <string name="you_are_getting_close">You are getting close!</string>
-    <string name="your_destination_is_only">You destination is only</string>
-    <string name="meters_from_here">meters from here.</string>
+    <string name="set_alarm">התראה\nחדשה</string>
+    <string name="set_new_alarm">התראה\nחדשה</string>
+    <string name="title_activity_set_target">התראה חדשה</string>
+    <string name="your_target_address">קבע את כתובת היעד</string>
+    <string name="kilometers">מטר</string>
+    <string name="title_activity_alarm">התראה</string>
+    <string name="stop_alarm">עצור\nהתראה</string>
+    <string name="cancel_alarm">בטל\nהתראה</string>
+    <string name="alarm_canceled">התראה בוטלה!</string>
+    <string name="press_back_again">לחץ שוב "חזור" כדי לצאת</string>
+    <string name="adress_not_found">כתובת לא נמצאה!</string>
+    <string name="no_internet_connection">אין חיבור אינטרנט זמין!</string>
+    <string name="internal_error">תקלה פנימית!</string>
+    <string name="you_need_to_type_address">יש להזין כתובת</string>
+    <string name="how_far_from_target">כמה רחוק מהיעד\nתרצה לקבל התראה?</string>
+    <string name="go">סע!</string>
+    <string name="you_are_getting_close">אתה קרוב!</string>
+    <string name="your_destination_is_only">היעד נמצא רק</string>
+    <string name="meters_from_here">מטרים ממך!</string>
+
     
-    
-    <string name="connection_timeout">Connection Timeout!</string>
-	<string name="gps_network_not_enabled">Your Location services are disabled!\nM I Close need at least network location service to work</string>
-	<string name="open_location_settings">Open location settings</string>
-    <string name="exit">Exit</string>
     
     
     

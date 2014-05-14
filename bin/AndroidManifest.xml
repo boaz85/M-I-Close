@@ -1,9 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.boazsh.m_i_close.app"
-    android:versionCode="0"
+    android:versionCode="2"
     android:versionName="Alpha" >
 
+  
+      <supports-screens
+    android:smallScreens="true"
+    android:normalScreens="true"
+    android:largeScreens="true" 
+    android:xlargeScreens="true"    
+    android:anyDensity="true" />
     <permission
         android:name="com.boazsh.m_i_close.app.permission.MAPS_RECEIVE"
         android:protectionLevel="signature" />
@@ -15,7 +22,7 @@
     <uses-sdk
         android:maxSdkVersion="19"
         android:minSdkVersion="11"
-        android:targetSdkVersion="16" />
+        android:targetSdkVersion="19" />
 
     <uses-permission android:name="com.boazsh.m_i_close.app.permission.MAPS_RECEIVE" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -25,15 +32,17 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_MOCK_LOCATION" />
+    <uses-permission android:name="android.permission.VIBRATE"/>
 
     <application
         android:allowBackup="true"
         android:icon="@drawable/miclose"
         android:label="@string/app_name"
-        android:theme="@android:style/Theme.NoTitleBar" >
+        android:theme="@style/MICloseAppTheme" >
         <activity
             android:name="com.boazsh.m_i_close.app.activities.MainActivity"
-            android:label="@string/app_name" >
+            android:label="@string/app_name"
+            android:theme="@style/MICloseAppTheme.MainActivityTheme" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -43,7 +52,8 @@
         <activity
             android:name="com.boazsh.m_i_close.app.activities.SetTargetActivity"
             android:label="@string/title_activity_set_target"
-            android:parentActivityName="com.boazsh.m_i_close.app.activities.MainActivity" >
+            android:parentActivityName="com.boazsh.m_i_close.app.activities.MainActivity"
+            android:theme="@style/MICloseAppTheme.SetTargetActivityTheme" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.boazsh.m_i_close.app.activities.MainActivity" />
@@ -52,7 +62,7 @@
             android:name="com.boazsh.m_i_close.app.activities.AlarmActivity"
             android:label="@string/title_activity_alarm"
             android:parentActivityName="com.boazsh.m_i_close.app.activities.MainActivity"
-            android:theme="@android:style/Theme.NoTitleBar" >
+            android:theme="@style/MICloseAppTheme" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.boazsh.m_i_close.app.activities.MainActivity" />
@@ -69,7 +79,7 @@
             android:value="@integer/google_play_services_version" />
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
-            android:value="AIzaSyA6aVJeoafcsqskYr38ypmTIVLHJ68Y4x0" />
+            android:value="AIzaSyDKfGq--JOHoNp6OuqyzRPnDjfx2WFOARw" />
 
         <uses-library android:name="com.google.android.maps" />
 

@@ -142,9 +142,8 @@ public class GeofenceRemover implements
 
             msg = mContext.getString(R.string.remove_geofences_id_success,
                     Arrays.toString(geofenceRequestIds));
-            
-            GeofenceStore geofenceStore = new GeofenceStore(mContext);
-            geofenceStore.clearGeofence(mCurrentGeofenceId);
+
+            Log.d(GeofenceUtils.APPTAG, msg);
 
         } else {
 

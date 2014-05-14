@@ -161,6 +161,12 @@ public class GeofenceRequester
             Intent intent = new Intent("com.boazsh.m_i_close_app.ALARM_START");
             
             Location currentLocation = mLocationClient.getLastLocation();
+            
+            if (currentLocation == null) {
+            	
+            	
+            }
+
             GeofenceStore target = new GeofenceStore(mActivity);
             Location targetLocation = target.getSimpleGeofenceLocation();
             

@@ -2,13 +2,13 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	style="@style/MICloseAppTheme.MainActivityTheme"
     android:orientation="vertical" >
-    
 
     <TextView
         android:id="@+id/setAlarmTextView"
         style="@style/MICloseAppTheme.BigButton.SetAlarmButton"
-        android:layout_width="285dp"
-        android:layout_height="285dp"
-		android:textSize="50sp" />
-		
+        android:layout_width="500dp"
+        android:layout_height="500dp"
+        android:textSize="100sp"
+ />
+
 </LinearLayout>

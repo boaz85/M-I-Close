@@ -2,8 +2,10 @@
 <resources>
 
     <color name="light_blue">#0386b5</color>
+    <color name="light_blue_shadow">#036082</color>
     <color name="light_blue_trans">#400386b5</color>
     <color name="light_pink">#b32866</color>
+    <color name="light_pink_shadow">#8F2152</color>
     <color name="yellow">#e5e533</color>
     <color name="purple">#9522b2</color>
     <color name="turquoise">#03c997</color>

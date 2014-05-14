@@ -1,5 +1,6 @@
 package com.boazsh.m_i_close.app.helpers;
 
+import java.net.URLEncoder;
 import java.util.ArrayList;
 
 import org.json.JSONArray;
@@ -13,22 +14,57 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 
 import com.boazsh.m_i_close.app.R;
+import com.boazsh.m_i_close.app.activities.SetTargetActivity;
 
-public class DataParser extends AsyncTask<Void, Integer, Void> {
+public class AutoCompleteTask extends AsyncTask<Void, Integer, Void> {
 
 	private static final String TAG_RESULT = "predictions";
+	private static final String WEB_API_KEY = "AIzaSyBG3ZEQRc1AhXgeIV9dsSUo7mY7FfhgjV8";
 	
 	private ArrayList<String> mSuggedtedAddresses;
-	private String mRequestUrl;
+	String mAutoCompleteRequestUrl;
 	private Context mApplicationContext;
 	private AutoCompleteTextView mAddress_AutoCompleteTextView;
 	
-	public DataParser (Context applicationContext, String requestUrl, AutoCompleteTextView autoCompleteTextView) {
+	public AutoCompleteTask (Context applicationContext, AutoCompleteTextView autoCompleteTextView) {
 		
 		mSuggedtedAddresses = new ArrayList<String>();
-		mRequestUrl = requestUrl;
 		mApplicationContext = applicationContext;
 		mAddress_AutoCompleteTextView = autoCompleteTextView;
+	}
+	
+	@Override
+	protected void onPreExecute() {
+		
+		String[] search_text;
+		
+		String input;
+		
+		search_text = mAddress_AutoCompleteTextView.getText().toString().split(",");
+
+		try {
+			
+			input = URLEncoder.encode(search_text[0], "utf8");
+			
+		} catch (Exception e) {
+			
+			Log.e(SetTargetActivity.MICLOSE_LOG_LABEL, "Failed to encode user address");
+			input = null;
+		}
+		
+		mAutoCompleteRequestUrl = "https://maps.googleapis.com/maps/api/place/autocomplete/json";
+		mAutoCompleteRequestUrl += "?input=" + input;
+		mAutoCompleteRequestUrl += "&sensor=true&language=iw&";
+		mAutoCompleteRequestUrl += "key=" + WEB_API_KEY;
+		
+		if (search_text.length <= 1) {
+
+			Log.d("URL", mAutoCompleteRequestUrl);
+			
+		} else {
+			
+			cancel(false);
+		}
 	}
 	
 	@Override
@@ -38,7 +74,7 @@ public class DataParser extends AsyncTask<Void, Integer, Void> {
 		JSONParser jParser = new JSONParser();
 		JSONArray addresses = null;
 
-		json = jParser.getJSONFromUrl(mRequestUrl.toString());
+		json = jParser.getJSONFromUrl(mAutoCompleteRequestUrl);
 		
 		if (json != null) {
 			

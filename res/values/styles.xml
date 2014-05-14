@@ -1,20 +1,76 @@
 <resources>
 
-    <!--
-        Base application theme, dependent on API level. This theme is replaced
-        by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
-    -->
-    <style name="AppBaseTheme" parent="android:Theme.Holo.Light">
-        <!--
-            Theme customizations available in newer API levels can go in
-            res/values-vXX/styles.xml, while customizations related to
-            backward-compatibility can go here.
-        -->
+    <style name="MICloseAppTheme" parent="@android:style/Theme.NoTitleBar">
+        <item name="android:typeface">monospace</item>
+        <item name="android:dropDownListViewStyle">@style/MICloseListViewStyle</item>
+        <item name="android:layout_width">match_parent</item>
+    	<item name="android:layout_height">match_parent</item>
+    	
     </style>
+    
+    <style name="MICloseAppTheme.MainActivityTheme">
+        <item name="android:background">@color/light_blue</item>
+        <item name="android:gravity">center</item>
+    </style>
+    
+    <style name="MICloseAppTheme.SetTargetActivityTheme">
+        <item name="android:background">@color/light_pink</item>
+        <item name="android:gravity">center_horizontal</item>
+    </style>
+    
+    <style name="MICloseAppTheme.EditText">
+        <item name="android:alpha">50</item>
+        <item name="android:background">@drawable/shape_textfield_rectangle</item>
+        <item name="android:ems">10</item>
+        <item name="android:hint">@string/your_target_address</item>
+        <item name="android:inputType">textPostalAddress</item>
+        <item name="android:popupBackground">@null</item>
+        <item name="android:textColor">@color/grey</item>
+     </style>
+     
+    <style name="MICloseAppTheme.SeekBar">
+        <item name="android:progress">50</item>
+        <item name="android:progressDrawable">@drawable/seekbar_progress_bar</item>
+        <item name="android:thumb">@drawable/shape_circle_dark_turquoise</item>
+        <item name="android:max">@integer/seekBar_max_value</item>
+     </style>
 
-    <!-- Application theme. -->
-    <style name="AppTheme" parent="AppBaseTheme">
-        <!-- All customizations that are NOT specific to a particular API-level can go here. -->
-    </style>
+    <style name="MICloseAppTheme.BigButton">
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/yellow</item>
+        <item name="android:textStyle">bold</item>
+     </style> 
+
+    <style name="MICloseAppTheme.BigButton.SetAlarmButton">
+        <item name="android:background">@drawable/shape_circle_pink</item>
+        <item name="android:text">@string/set_alarm</item>
+     </style>  
+     
+    <style name="MICloseAppTheme.BigButton.GoButton">
+        <item name="android:background">@drawable/shape_circle_blue</item>
+        <item name="android:text">@string/go</item>
+     </style>
+     
+    <style name="MICloseAppTheme.SemiCircleButton.Normal">
+        <item name="android:layout_width">@dimen/popup_button_width</item>
+        <item name="android:layout_height">@dimen/popup_button_hight</item>
+		<item name="android:textSize">@dimen/popup_button_text_size</item>
+     </style> 
+     
+    <style name="MICloseAppTheme.SemiCircleButton.Xlarge">
+        <item name="android:layout_width">@dimen/popup_button_width_large</item>
+        <item name="android:layout_height">@dimen/popup_button_hight_large</item>
+		<item name="android:textSize">@dimen/popup_button_text_size_large</item>
+     </style> 
+     
+    <style name="MICloseAppTheme.SemiCircleButton">
+        <item name="android:layout_centerHorizontal">true</item>
+        <item name="android:gravity">center</item>
+     </style> 
+  
+	<style name="MICloseListViewStyle" parent="@android:style/Widget.ListView">
+	        <item name="android:divider">#00000000</item>
+	        <item name="android:dividerHeight">1px</item>
+	</style>
 
 </resources>

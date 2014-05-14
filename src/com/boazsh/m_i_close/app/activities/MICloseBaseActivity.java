@@ -1,10 +1,16 @@
 package com.boazsh.m_i_close.app.activities;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.widget.Toast;
 
 import com.boazsh.m_i_close.app.R;
@@ -69,9 +75,75 @@ public abstract class MICloseBaseActivity extends Activity {
 	protected void showToast(int stringId, boolean isLong) {
 		
 		Toast.makeText(getApplicationContext(), getResources().getString(stringId), 
-				isLong ? Toast.LENGTH_SHORT : Toast.LENGTH_SHORT).show();
+				isLong ? Toast.LENGTH_LONG : Toast.LENGTH_SHORT).show();
 	}
 	
-	
+	protected boolean isLocationAvailable() {
+
+		LocationManager lm = null;
+		
+		boolean gps_enabled = false;
+		boolean network_enabled = false;
+		
+		if (lm == null)
+			
+			lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+		
+		try {
+			
+			gps_enabled = lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
+			
+		} catch (Exception ex) {
+			//TODO Handle this
+		}
+		
+		try {
+			
+			network_enabled = lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+			
+		} catch (Exception ex) {
+			
+			//TODO Handle this
+		}
+
+		if (!gps_enabled && !network_enabled) {
+			
+			Builder dialog = new AlertDialog.Builder(this);
+			dialog.setMessage(getResources().getString(
+					R.string.gps_network_not_enabled));
+
+			dialog.setPositiveButton(
+					getResources().getString(R.string.open_location_settings),
+					new DialogInterface.OnClickListener() {
+
+						@Override
+						public void onClick(
+								DialogInterface paramDialogInterface,
+								int paramInt) {
+							// TODO Auto-generated method stub
+							Intent myIntent = new Intent(
+									Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+							startActivity(myIntent);
+							// get gps
+						}
+					});
+			
+			dialog.setNegativeButton(getString(R.string.exit),
+					new DialogInterface.OnClickListener() {
+
+						@Override
+						public void onClick(
+								DialogInterface paramDialogInterface,
+								int paramInt) {
+							System.exit(1);
+
+						}
+					});
+			dialog.show();
+			return false;
+		}
+		
+		return true;
+	}
 
 }
