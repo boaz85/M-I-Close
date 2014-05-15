@@ -145,6 +145,7 @@ public class AlarmService extends Service {
 
 		mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 		IntentFilter filter = new IntentFilter();
+		//TODO Set constant
 		filter.addAction("ALARM_STOPPED_ACTION");
 		registerReceiver(mAlarmServiceBroadcastReceiver, filter);
 		

@@ -69,6 +69,11 @@ public class AlarmActivity extends MICloseBaseActivity {
 
 			case ALARM_STOPPED:
 
+				//TODO Make the remover data member
+				GeofenceRemover remover = new GeofenceRemover(AlarmActivity.this);
+				remover.setInProgressFlag(false);
+				remover.removeGeofencesById(GeofenceWrapper.GEOFENCE_ID);
+				mGeofenceStore.clearGeofence(GeofenceWrapper.GEOFENCE_ID);
 				popOut(mStopAlarmTextView);
 				popIn(mNewAlarmTextView, false);
 
