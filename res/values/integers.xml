@@ -5,5 +5,8 @@
     <integer name="seekBar_multi_factor">500</integer>
     <integer name="double_tap_timeout">3000</integer>
     <integer name="animation_duration">1000</integer>
+    
+    <integer name="proximity_request_interval">10000</integer>
+    <integer name="geocode_timout">40</integer>
 
     </resources>

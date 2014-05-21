@@ -1,20 +1,15 @@
 package com.boazsh.m_i_close.app.activities;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.AlertDialog.Builder;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.location.LocationManager;
 import android.os.Bundle;
-import android.provider.Settings;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.boazsh.m_i_close.app.R;
-import com.boazsh.m_i_close.app.geofence.GeofenceStore;
+import com.boazsh.m_i_close.app.helpers.MICloseStore;
+import com.boazsh.m_i_close.app.helpers.MICloseUtils;
 
 public abstract class MICloseBaseActivity extends Activity {
 	
@@ -30,6 +25,10 @@ public abstract class MICloseBaseActivity extends Activity {
 	
 	public static final String ALARM_SET_KEY = "alarm_set";
 
+	public static final String SHARED_PREFERENCE_NAME = "MICLOSE_SHARED_PREFERENCES";
+
+	protected MICloseStore mMICloseStore;
+	
 	protected SharedPreferences mSharedPreferences;
 	protected Editor mPreferencesEditor;
 	protected long mLastBackClickTime;
@@ -38,16 +37,10 @@ public abstract class MICloseBaseActivity extends Activity {
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        initSharedPreferences();
+        
+        mMICloseStore = new MICloseStore(MICloseBaseActivity.this);
 	}
 	
-	protected void initSharedPreferences() {
-		
-		mSharedPreferences = getSharedPreferences(
-				GeofenceStore.SHARED_PREFERENCE_NAME,
-                Context.MODE_PRIVATE);
-		mPreferencesEditor = mSharedPreferences.edit();
-	}
 
 	protected void backPressed() {
 		
@@ -56,6 +49,7 @@ public abstract class MICloseBaseActivity extends Activity {
         
         if ((currentTime - mLastBackClickTime) < doubleTapTimeout) {
         	
+        	Log.d(MICloseUtils.APP_LOG_TAG, "Double \"Back\" click detected");
         	mLastBackClickTime = currentTime;
         	moveTaskToBack(true);
         	
@@ -76,74 +70,6 @@ public abstract class MICloseBaseActivity extends Activity {
 		
 		Toast.makeText(getApplicationContext(), getResources().getString(stringId), 
 				isLong ? Toast.LENGTH_LONG : Toast.LENGTH_SHORT).show();
-	}
-	
-	protected boolean isLocationAvailable() {
-
-		LocationManager lm = null;
-		
-		boolean gps_enabled = false;
-		boolean network_enabled = false;
-		
-		if (lm == null)
-			
-			lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-		
-		try {
-			
-			gps_enabled = lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
-			
-		} catch (Exception ex) {
-			//TODO Handle this
-		}
-		
-		try {
-			
-			network_enabled = lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-			
-		} catch (Exception ex) {
-			
-			//TODO Handle this
-		}
-
-		if (!gps_enabled && !network_enabled) {
-			
-			Builder dialog = new AlertDialog.Builder(this);
-			dialog.setMessage(getResources().getString(
-					R.string.gps_network_not_enabled));
-
-			dialog.setPositiveButton(
-					getResources().getString(R.string.open_location_settings),
-					new DialogInterface.OnClickListener() {
-
-						@Override
-						public void onClick(
-								DialogInterface paramDialogInterface,
-								int paramInt) {
-							// TODO Auto-generated method stub
-							Intent myIntent = new Intent(
-									Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-							startActivity(myIntent);
-							// get gps
-						}
-					});
-			
-			dialog.setNegativeButton(getString(R.string.exit),
-					new DialogInterface.OnClickListener() {
-
-						@Override
-						public void onClick(
-								DialogInterface paramDialogInterface,
-								int paramInt) {
-							System.exit(1);
-
-						}
-					});
-			dialog.show();
-			return false;
-		}
-		
-		return true;
 	}
 
 }

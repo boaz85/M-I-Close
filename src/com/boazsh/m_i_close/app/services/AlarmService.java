@@ -3,6 +3,7 @@ package com.boazsh.m_i_close.app.services;
 import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.Notification.Builder;
+import android.app.AlarmManager;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -10,131 +11,75 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
+import android.location.Location;
+import android.location.LocationManager;
 import android.media.MediaPlayer;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Binder;
 import android.os.IBinder;
 import android.os.Vibrator;
-import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.boazsh.m_i_close.app.R;
 import com.boazsh.m_i_close.app.activities.AlarmActivity;
-import com.boazsh.m_i_close.app.geofence.GeofenceUtils;
-import com.boazsh.m_i_close.app.geofence.LocationServiceErrorMessages;
-import com.boazsh.m_i_close.app.geofence.GeofenceStore;
-import com.google.android.gms.location.Geofence;
-import com.google.android.gms.location.LocationClient;
+import com.boazsh.m_i_close.app.helpers.MICloseStore;
+import com.boazsh.m_i_close.app.helpers.MICloseUtils;
+
 
 public class AlarmService extends Service {
 
-	public static final int NOTIFICATION_ID = 4908;
-	public static final String ALARM_SERVICE_INTENT_ACTION = "com.boazsh.m_i_close.app.ALARM_SERVICE_BROADCAST";
 	public static final String ALARM_MESSAGE_KEY = "alarm_message";
 	
-	IBinder mBinder = new LocalBinder();
+	private IBinder mBinder = new LocalBinder();
 	private MediaPlayer mPlayer;
 	private NotificationManager mNotificationManager;
-	protected SharedPreferences mSharedPreferences;
-	protected Editor mPreferencesEditor;
 	private Vibrator mVibrator;
 
-	private final BroadcastReceiver mAlarmServiceBroadcastReceiver = new BroadcastReceiver() {
-		@Override
-		public void onReceive(Context context, Intent intent) {
-
-			mVibrator.cancel();
-			mPlayer.stop();
-
-			mPreferencesEditor.putBoolean(AlarmActivity.ALARM_STARTED_KEY, false);
-			mPreferencesEditor.putBoolean(AlarmActivity.ALARM_DONE_KEY, true);
-			mPreferencesEditor.apply();
-
-			mNotificationManager.cancel(NOTIFICATION_ID);
-
-			Intent broadcastAlarmIntent = new Intent(AlarmActivity.ALARM_ACTIVITY_INTENT_ACTION);
-			broadcastAlarmIntent.putExtra(ALARM_MESSAGE_KEY, AlarmServiceMessage.ALARM_STOPPED.getValue());
-			sendBroadcast(broadcastAlarmIntent);
-
-			stopSelf();
-		}
-	};
-	
-	
+	private final BroadcastReceiver mAlarmServiceBroadcastReceiver = new AlarmStopBroadcastReceiver();
+	private MICloseStore mMICloseStore;
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		super.onStartCommand(intent, flags, startId);
 
-		// Create a local broadcast Intent
-        Intent broadcastIntent = new Intent();
-
-        // First check for errors
-        if (LocationClient.hasError(intent)) {
-
-            // Get the error code
-            int errorCode = LocationClient.getErrorCode(intent);
-
-            // Get the error message
-            String errorMessage = LocationServiceErrorMessages.getErrorString(this, errorCode);
-
-            // Log the error
-            Log.e(GeofenceUtils.APPTAG,
-                    getString(R.string.geofence_transition_error_detail, errorMessage)
-            );
-
-            //TODO Handle this error in some activity
-            // Set the action and error message for the broadcast intent
-            broadcastIntent.setAction(GeofenceUtils.ACTION_GEOFENCE_ERROR) //TODO: Change to ==my== action
-                           .putExtra(GeofenceUtils.EXTRA_GEOFENCE_STATUS, errorMessage);
-
-            // Broadcast the error *locally* to other components in this app
-            LocalBroadcastManager.getInstance(this).sendBroadcast(broadcastIntent);
-
-        // If there's no error, get the transition type and create a notification
-        } else {
-		
-		
-        	// Get the type of transition (entry or exit)
-            int transition = LocationClient.getGeofenceTransition(intent);
-
-            // Test that a valid transition was reported
-            if (transition == Geofence.GEOFENCE_TRANSITION_ENTER) {
-
-            	mSharedPreferences = getSharedPreferences(
-        				GeofenceStore.SHARED_PREFERENCE_NAME,
-                        Context.MODE_PRIVATE);
-        		mPreferencesEditor = mSharedPreferences.edit();
-
-        		mPreferencesEditor.putBoolean(AlarmActivity.ALARM_STARTED_KEY, true);
-        		mPreferencesEditor.apply();
+				mMICloseStore.setAlarmStarted(true).commit();
+	
+        		LocationManager mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         		
-            	//TODO: Set constant key
-            	float distance = intent.getFloatExtra("TARGET_DISTANCE_KEY", -1);
-            	//TODO: Check value
+        		//TODO: Decide Provider at runtime!!!
+        		Location currentLocation = mLocationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+        		
+        		Location targetLocation = new Location(MICloseUtils.MICLOSE_DUMMY_PROVIDER);
+        		
+        		targetLocation.setLatitude(mMICloseStore.getTargetLatitude());
+        		targetLocation.setLatitude(mMICloseStore.getTargetLongitude());
+        		
+        		//Stop alarm manager invocations
+        		Intent locationStopIntent = new Intent(AlarmService.this, LocationService.class);
+        		Log.d(MICloseUtils.APP_LOG_TAG, "Stopping AlarmManager proximity requests");
+        		stopProximityAlarmSchedule(AlarmService.this, locationStopIntent);
+        		
+        		//Stop LocationService itself
+        		Log.d(MICloseUtils.APP_LOG_TAG, "Stopping location service");
+        		stopService(locationStopIntent);
+        		
+        		//Make sure there is no proximity request left
+        		Log.d(MICloseUtils.APP_LOG_TAG, "Removing proximity alert");
+        		mLocationManager.removeProximityAlert(MICloseUtils.getProximityPendingIntent(AlarmService.this));
+  
+            	float distance = currentLocation.distanceTo(targetLocation);
+
             	showNotification(distance);
             	setAlarm();
 
-            	Intent broadcastAlarmIntent = new Intent(AlarmActivity.ALARM_ACTIVITY_INTENT_ACTION);
+            	Intent broadcastAlarmIntent = new Intent(MICloseUtils.ALARM_CHANGE_INTENT);
     			broadcastAlarmIntent.putExtra(ALARM_MESSAGE_KEY, AlarmServiceMessage.ALARM_STARTED.getValue());
+    			
+    			Log.d(MICloseUtils.APP_LOG_TAG, "Sending ALARM_CHANGE_INTENT");
     			sendBroadcast(broadcastAlarmIntent);
 
-
-                Log.d(GeofenceUtils.APPTAG,
-                        getString(R.string.geofence_transition_notification_text));
-
-            // An invalid transition was reported
-            } else {
-                // Always log as an error
-                Log.e(GeofenceUtils.APPTAG,
-                        getString(R.string.geofence_transition_invalid_type, transition));
-            }
-        }
-
-		return START_STICKY;
+    			return START_STICKY;
 		
         }
 	
@@ -143,16 +88,26 @@ public class AlarmService extends Service {
 	public void onCreate() {
 		super.onCreate();
 
+		Log.d(MICloseUtils.APP_LOG_TAG, "AlarmService was started");
+		
 		mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+		
 		IntentFilter filter = new IntentFilter();
-		//TODO Set constant
-		filter.addAction("ALARM_STOPPED_ACTION");
+		filter.addAction(MICloseUtils.ALARM_STOP_INTENT);
 		registerReceiver(mAlarmServiceBroadcastReceiver, filter);
 		
-		mSharedPreferences = getSharedPreferences(
-				GeofenceStore.SHARED_PREFERENCE_NAME,
-                Context.MODE_PRIVATE);
-		mPreferencesEditor = mSharedPreferences.edit();
+		mMICloseStore = new MICloseStore(AlarmService.this);
+	}
+	
+	public static void stopProximityAlarmSchedule(Context context, Intent alarmIntent) {
+
+		PendingIntent pendingIntent = PendingIntent.getService(	context, 
+																MICloseUtils.LOCATION_SERVICE_INTENT_ID, 
+																alarmIntent,
+																PendingIntent.FLAG_CANCEL_CURRENT);
+		
+		AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+		alarmManager.cancel(pendingIntent);
 	}
 
 	private void setAlarm() {
@@ -175,9 +130,7 @@ public class AlarmService extends Service {
 		mPlayer.start();
 		
 		mVibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-
-		long vibrationPattern[] = new long[]{0,1000, 1000};
-		mVibrator.vibrate(vibrationPattern, 1);
+		mVibrator.vibrate(MICloseUtils.VIBRATION_PATTERN, 1);
 	}
 
 	@Override
@@ -191,9 +144,12 @@ public class AlarmService extends Service {
 	private void showNotification(float distance) {
 
 		Intent contentIntent = new Intent(this, AlarmActivity.class);
-		Intent stopIntent = new Intent("ALARM_STOPPED_ACTION");
+		Intent stopIntent = new Intent(MICloseUtils.ALARM_STOP_INTENT);
 
-		PendingIntent contentPIntent = PendingIntent.getActivity(this, 456, contentIntent, 0);
+		PendingIntent contentPIntent = PendingIntent.getActivity(	this, 
+																	MICloseUtils.NOTIFICATION_CONTENT_INTENT_ID, 
+																	contentIntent, 0);
+		
 		PendingIntent stopPIIntent = PendingIntent.getBroadcast(this, 0, stopIntent, 0);
 
 		int apiLevel = android.os.Build.VERSION.SDK_INT;
@@ -206,12 +162,15 @@ public class AlarmService extends Service {
 		
 		if (apiLevel >= 16) {
 			
-			notificationBuilder.addAction(R.drawable.miclose_small, "Stop now", stopPIIntent);
+			String stopAlarm = getResources().getString(R.string.stop_alarm_notification);
+			notificationBuilder.addAction(R.drawable.miclose_small, stopAlarm, stopPIIntent);
 		}
 		
 		mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 		Notification notification = notificationBuilder.build();
-		mNotificationManager.notify(NOTIFICATION_ID, notification);
+		
+		Log.d(MICloseUtils.APP_LOG_TAG, "Showing notification");
+		mNotificationManager.notify(MICloseUtils.NOTIFICATION_ID, notification);
 	}
     
     private String buildNotificationMessage(float distance) {
@@ -234,6 +193,41 @@ public class AlarmService extends Service {
 	@Override
 	public IBinder onBind(Intent intent) {
 		return mBinder;
+	}
+
+	private class AlarmStopBroadcastReceiver extends BroadcastReceiver {
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+
+			Log.d(MICloseUtils.APP_LOG_TAG, "AlarmStopBroadcastReceiver was started");
+			
+			Log.d(MICloseUtils.APP_LOG_TAG, "Stopping vibration");
+			mVibrator.cancel();
+			
+			Log.d(MICloseUtils.APP_LOG_TAG, "Stopping alarm (sound)");
+			mPlayer.stop();
+
+			mMICloseStore.setAlarmStarted(false)
+						 .setAlarmDone(true)
+						 .setAlarmSet(false)
+						 .commit();
+
+			Log.d(MICloseUtils.APP_LOG_TAG, "Canceling notification");
+			mNotificationManager.cancel(MICloseUtils.NOTIFICATION_ID);
+
+			Intent broadcastAlarmIntent = new Intent(
+					MICloseUtils.ALARM_CHANGE_INTENT);
+			
+			broadcastAlarmIntent.putExtra(ALARM_MESSAGE_KEY,
+					AlarmServiceMessage.ALARM_STOPPED.getValue());
+			
+			Log.d(MICloseUtils.APP_LOG_TAG, "Sending ALARM_CHANGE_INTENT");
+			sendBroadcast(broadcastAlarmIntent);
+
+			Log.d(MICloseUtils.APP_LOG_TAG, "Stopping AlarmService (Self)");
+			stopSelf();
+		}
 	}
 
 }

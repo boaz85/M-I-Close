@@ -9,6 +9,7 @@
     <string name="kilometers">Meters</string>
     <string name="title_activity_alarm">Your Target</string>
     <string name="stop_alarm">Alarm\nStop</string>
+    <string name="stop_alarm_notification">Stop alarm</string>
     <string name="cancel_alarm">Alarm\nCancel</string>
     <string name="alarm_canceled">Alarm canceled!</string>
     <string name="press_back_again">Press "Back" again to exit</string>
@@ -28,7 +29,9 @@
 	<string name="open_location_settings">Open location settings</string>
     <string name="exit">Exit</string>
     
-    
+    <string name="processing">Processing...</string>
+    <string name="please_wait">Please Wait</string>
+    <string name="your_target">Your target</string>
     
     <!-- Messages -->
     <string name="add_geofences_result_success">

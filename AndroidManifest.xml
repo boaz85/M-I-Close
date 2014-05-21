@@ -4,13 +4,13 @@
     android:versionCode="2"
     android:versionName="Alpha" >
 
-  
-      <supports-screens
-    android:smallScreens="true"
-    android:normalScreens="true"
-    android:largeScreens="true" 
-    android:xlargeScreens="true"    
-    android:anyDensity="true" />
+    <supports-screens
+        android:anyDensity="true"
+        android:largeScreens="true"
+        android:normalScreens="true"
+        android:smallScreens="true"
+        android:xlargeScreens="true" />
+
     <permission
         android:name="com.boazsh.m_i_close.app.permission.MAPS_RECEIVE"
         android:protectionLevel="signature" />
@@ -32,7 +32,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_MOCK_LOCATION" />
-    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
         android:allowBackup="true"
@@ -90,6 +90,18 @@
             <intent-filter>
                 <action android:name="com.boazsh.m_i_close_app.ALARM_START" />
             </intent-filter>
+        </receiver>
+
+        <service
+            android:name="com.boazsh.m_i_close.app.services.LocationService"
+            android:enabled="true"
+            android:exported="false" >
+        </service>
+
+        <receiver
+            android:name="com.boazsh.m_i_close.app.AlarmServiceBroadcastReceiver"
+            android:enabled="true"
+            android:exported="false" >
         </receiver>
     </application>
 

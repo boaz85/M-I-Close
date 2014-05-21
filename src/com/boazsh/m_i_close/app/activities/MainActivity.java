@@ -2,10 +2,12 @@ package com.boazsh.m_i_close.app.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
 import com.boazsh.m_i_close.app.R;
+import com.boazsh.m_i_close.app.helpers.MICloseUtils;
 
 
 //TODO: Allow picking address from map - Next Release
@@ -27,11 +29,13 @@ public class MainActivity extends MICloseBaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        isLocationAvailable();
+        Log.d(MICloseUtils.APP_LOG_TAG, "MainActivity was started");
         
-        boolean isAlarmSet = mSharedPreferences.getBoolean(ALARM_SET_KEY, false);
-
-        if (isAlarmSet) {
+        MICloseUtils.isLocationAvailable(MainActivity.this);
+        
+        if (mMICloseStore.isAlarmSet()) {
+        	
+        	Log.d(MICloseUtils.APP_LOG_TAG, "There is already alarm set. Starting SetTargetActivity");
         	Intent goToAlarmWaitActivityIntent = new Intent(MainActivity.this, AlarmActivity.class);
         	startActivity(goToAlarmWaitActivityIntent);
         }
@@ -44,8 +48,9 @@ public class MainActivity extends MICloseBaseActivity {
             public void onClick(View arg0) {
 
                 Intent setAlarmIntent = new Intent(MainActivity.this, SetTargetActivity.class);
+                
+                Log.d(MICloseUtils.APP_LOG_TAG, "Starting SetTargetActivity");
                 startActivity(setAlarmIntent);
-
             }
 
         });
