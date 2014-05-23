@@ -1,20 +1,21 @@
-<resources>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
 
     <style name="MICloseAppTheme" parent="@android:style/Theme.NoTitleBar">
-        <item name="android:typeface">monospace</item>
+        <!-- <item name="android:typeface">monospace</item> -->
         <item name="android:dropDownListViewStyle">@style/MICloseListViewStyle</item>
         <item name="android:layout_width">match_parent</item>
     	<item name="android:layout_height">match_parent</item>
+    	<item name="android:textColor">@color/default_text_color</item>
     	
     </style>
     
     <style name="MICloseAppTheme.MainActivityTheme">
-        <item name="android:background">@color/light_blue</item>
+        <item name="android:background">@color/main_activity_bg</item>
         <item name="android:gravity">center</item>
     </style>
     
     <style name="MICloseAppTheme.SetTargetActivityTheme">
-        <item name="android:background">@color/light_pink</item>
+        <item name="android:background">@color/set_target_activity_bg</item>
         <item name="android:gravity">center_horizontal</item>
     </style>
     
@@ -25,29 +26,29 @@
         <item name="android:hint">@string/your_target_address</item>
         <item name="android:inputType">textPostalAddress</item>
         <item name="android:popupBackground">@null</item>
-        <item name="android:textColor">@color/grey</item>
+        <item name="android:textColor">@color/textfield_rectangle_text_color</item>
      </style>
      
     <style name="MICloseAppTheme.SeekBar">
         <item name="android:progress">50</item>
-        <item name="android:progressDrawable">@drawable/seekbar_progress_bar</item>
-        <item name="android:thumb">@drawable/shape_circle_dark_turquoise</item>
+        <item name="android:progressDrawable">@drawable/shape_seekbar_progress_bar</item>
+        <item name="android:thumb">@drawable/shape_seekbar_thumb</item>
         <item name="android:max">@integer/seekBar_max_value</item>
      </style>
 
     <style name="MICloseAppTheme.BigButton">
         <item name="android:gravity">center</item>
-        <item name="android:textColor">@color/yellow</item>
+        <item name="android:textColor">@color/circle_text_color</item>
         <item name="android:textStyle">bold</item>
      </style> 
 
     <style name="MICloseAppTheme.BigButton.SetAlarmButton">
-        <item name="android:background">@drawable/shape_circle_pink</item>
+        <item name="android:background">@drawable/shape_circle_set_alarm</item>
         <item name="android:text">@string/set_alarm</item>
      </style>  
      
     <style name="MICloseAppTheme.BigButton.GoButton">
-        <item name="android:background">@drawable/shape_circle_blue</item>
+        <item name="android:background">@drawable/shape_circle_go</item>
         <item name="android:text">@string/go</item>
      </style>
      
@@ -72,5 +73,22 @@
 	        <item name="android:divider">#00000000</item>
 	        <item name="android:dividerHeight">1px</item>
 	</style>
+	
+	<style name="MICloseProgressDialogStyle" parent="@style/android:Theme.Holo">
+	        <item name="android:background">@color/yellow</item>
+	</style>
+	
+	
+	<style name="CustomDialog" parent="@android:style/Theme.Dialog">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowFrame">@android:color/transparent</item>
+        
+    <item name="android:background">@android:color/transparent</item>
+    
+    <item name="android:textColor">@color/yellow</item>
+
+    </style>
+	
+
 
 </resources>

@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:textSize="40sp"
     android:gravity="center_vertical"
-    android:textColor="@color/light_pink"
+
 	android:background="#d3a4c4"
     
 />

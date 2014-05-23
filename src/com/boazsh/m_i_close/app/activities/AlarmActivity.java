@@ -218,8 +218,8 @@ public class AlarmActivity extends MICloseBaseActivity {
         map.setMyLocationEnabled(true);
         LatLng userLatLng = new LatLng(latitude, longitude);
 
-        int radiusStrokeColor =     getIntegerResource(R.color.yellow);
-        int radiusFillColor =       getIntegerResource(R.color.light_blue_trans);
+        int radiusStrokeColor =     getIntegerResource(R.color.radius_stroke);
+        int radiusFillColor =       getIntegerResource(R.color.radius_fill);
 
         CircleOptions circleOptions = new CircleOptions();
         circleOptions.fillColor(radiusFillColor).center(userLatLng).strokeWidth(2);

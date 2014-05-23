@@ -5,8 +5,8 @@
     android:layout_height="wrap_content"
     android:textSize="20sp" 
     android:gravity="center_vertical"
-    android:textColor="@color/light_pink"
-	android:background="#d0d3a4c4"
+    android:textColor="@color/light_blue"
+	android:background="@drawable/shape_listitem_rectangle"
     
 />
 

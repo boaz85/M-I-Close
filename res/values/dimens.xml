@@ -8,7 +8,6 @@
     
     <dimen name="popup_button_text_size_large">40sp</dimen>
     <dimen name="popup_button_width_large">300dp</dimen>
-    <dimen name="popup_corner_radius_large">700dp</dimen>
     <dimen name="popup_button_hight_large">150dp</dimen>
 
     </resources>

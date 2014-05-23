@@ -31,6 +31,7 @@ public class MainActivity extends MICloseBaseActivity {
 
         Log.d(MICloseUtils.APP_LOG_TAG, "MainActivity was started");
         
+        MICloseUtils.isNetworkAvailable(MainActivity.this);
         MICloseUtils.isLocationAvailable(MainActivity.this);
         
         if (mMICloseStore.isAlarmSet()) {

@@ -47,13 +47,37 @@ public class AlarmService extends Service {
 	
         		LocationManager mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         		
-        		//TODO: Decide Provider at runtime!!!
-        		Location currentLocation = mLocationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+        		Location currentLocation;
+        		Location targetLocation;
+        		float distance;
         		
-        		Location targetLocation = new Location(MICloseUtils.MICLOSE_DUMMY_PROVIDER);
+        		if (mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+        			
+        			currentLocation = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        			
+        		} else if (mLocationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
+        			
+        			currentLocation = mLocationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+        			
+        		} else {
+        			
+        			currentLocation = null;
+        		}
+
+        		if (currentLocation != null) {
+        			
+	        		targetLocation = new Location(MICloseUtils.MICLOSE_DUMMY_PROVIDER);
+	        		
+	        		targetLocation.setLatitude(mMICloseStore.getTargetLatitude());
+	        		targetLocation.setLongitude(mMICloseStore.getTargetLongitude());
         		
-        		targetLocation.setLatitude(mMICloseStore.getTargetLatitude());
-        		targetLocation.setLatitude(mMICloseStore.getTargetLongitude());
+	        		distance = currentLocation.distanceTo(targetLocation);
+	        		
+        		} else {
+        			
+        			distance = -1;
+        		}
+
         		
         		//Stop alarm manager invocations
         		Intent locationStopIntent = new Intent(AlarmService.this, LocationService.class);
@@ -68,7 +92,7 @@ public class AlarmService extends Service {
         		Log.d(MICloseUtils.APP_LOG_TAG, "Removing proximity alert");
         		mLocationManager.removeProximityAlert(MICloseUtils.getProximityPendingIntent(AlarmService.this));
   
-            	float distance = currentLocation.distanceTo(targetLocation);
+            	
 
             	showNotification(distance);
             	setAlarm();
@@ -175,9 +199,18 @@ public class AlarmService extends Service {
     
     private String buildNotificationMessage(float distance) {
 
-		String text = getResources().getString(R.string.your_destination_is_only);
-		text += " " + String.valueOf((int) distance) + " ";
-		text += getResources().getString(R.string.meters_from_here);
+    	String text;
+    	
+    	if (distance == -1) {
+    		
+    		text = getResources().getString(R.string.your_destination_is_close);
+    		
+    	} else {
+    	
+			text = getResources().getString(R.string.your_destination_is_only);
+			text += " " + String.valueOf((int) distance) + " ";
+			text += getResources().getString(R.string.meters_from_here);
+    	}
 		
 		return text;
 	}

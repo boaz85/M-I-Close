@@ -5,11 +5,11 @@
 
   <gradient 
      android:type="radial"
-     android:startColor="@color/light_pink"
-     android:centerColor="@color/light_pink"
-     android:endColor="@color/light_pink_shadow"
+     android:startColor="@color/circle_set_alarm_bg1"
+     android:centerColor="@color/circle_set_alarm_bg1"
+     android:endColor="@color/circle_set_alarm_bg2"
      android:angle="90"
-     android:gradientRadius="800"
+     android:gradientRadius="600"
      android:thickness="30dp">
    </gradient>
   

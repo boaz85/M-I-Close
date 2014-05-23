@@ -30,8 +30,7 @@
         android:layout_marginTop="40dp"
         android:gravity="left"
         android:text="@string/how_far_from_target"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textColor="@color/yellow" />
+        android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <SeekBar
         android:id="@+id/targetDistanceSeekBar"
@@ -56,8 +55,7 @@
         android:layout_marginTop="4dp"
         android:layout_alignRight="@+id/targetAddressEditText"
         android:text="@string/kilometers"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="@color/turquoise" />
+        android:textAppearance="?android:attr/textAppearanceMedium" />
     
     
     <TextView
@@ -68,8 +66,7 @@
         android:layout_alignBottom="@+id/metersTextView"
         android:layout_marginRight="3dp"
         android:layout_toLeftOf="@+id/metersTextView"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="@color/turquoise" />
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <TextView
         android:id="@+id/goTextView"
@@ -79,7 +76,7 @@
         android:layout_below="@+id/metersNumberTextView"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="25dp" 
-        android:textSize="60sp" />
+        android:textSize="45sp" />
 
 
 

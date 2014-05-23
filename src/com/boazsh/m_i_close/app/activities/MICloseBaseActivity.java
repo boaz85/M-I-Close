@@ -51,8 +51,9 @@ public abstract class MICloseBaseActivity extends Activity {
         	
         	Log.d(MICloseUtils.APP_LOG_TAG, "Double \"Back\" click detected");
         	mLastBackClickTime = currentTime;
+
         	moveTaskToBack(true);
-        	
+
         } else {
         	
         	showToast(R.string.press_back_again, false);

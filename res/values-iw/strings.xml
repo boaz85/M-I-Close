@@ -5,7 +5,7 @@
     <string name="set_alarm">התראה\nחדשה</string>
     <string name="set_new_alarm">התראה\nחדשה</string>
     <string name="title_activity_set_target">התראה חדשה</string>
-    <string name="your_target_address">כתובת היעד</string>
+    <string name="your_target_address">כתובת היעד שלך&#8230;</string>
     <string name="kilometers">מטר</string>
     <string name="title_activity_alarm">התראה</string>
     <string name="stop_alarm">עצור\nהתראה</string>
@@ -30,7 +30,7 @@
 	<string name="open_location_settings">הגדרות מיקום</string>
     <string name="exit">יציאה</string>
     
-    <string name="processing">מעבד...</string>
+    <string name="processing">מעבד&#8230;</string>
     <string name="please_wait">נא להמתין</string>
     <string name="your_target">היעד שלך</string>
     

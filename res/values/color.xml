@@ -1,15 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <color name="light_blue">#0386b5</color>
+    <color name="light_blue">#1CA9C9</color>
     <color name="light_blue_shadow">#036082</color>
     <color name="light_blue_trans">#400386b5</color>
-    <color name="light_pink">#b32866</color>
+    <color name="light_pink">#C8385A</color>
     <color name="light_pink_shadow">#8F2152</color>
-    <color name="yellow">#e5e533</color>
+    <color name="yellow">#FFCF48</color>
     <color name="purple">#9522b2</color>
-    <color name="turquoise">#03c997</color>
-    <color name="grey">#8c8c8c</color>
+    <color name="turquoise">#1FCECB</color>
+    <color name="grey">#ECEABE</color>
     <color name="dark_turquoise">#64b285</color>
+    
+    <color name="default_text_color">#FFCF48</color>
+    
+    <color name="main_activity_bg">#1CA9C9</color>
+    <color name="set_target_activity_bg">#C8385A</color>
+    
+    
+    
+    <color name="radius_stroke">#FFCF48</color>
+    <color name="radius_fill">#400386b5</color>
+    
+    <color name="seekbar_progress_bar_bg">#FFCF48</color>
+    <color name="seekbar_progress_bar_fg">#1FCECB</color>
+    <color name="seekbar_thumb">#ECEABE</color>
+    
+    <color name="bottom_semicircle_bg">#1CA9C9</color>
+    <color name="top_semicircle1_bg">#C8385A</color>
+    <color name="top_semicircle2_bg">#1FCECB</color>
+    
+    <color name="circle_text_color">#FFCF48</color>
+    
+    <color name="circle_go_bg1">#1CA9C9</color>
+    <color name="circle_go_bg2">#036082</color>
+    
+    <color name="circle_set_alarm_bg1">#C8385A</color>
+    <color name="circle_set_alarm_bg2">#8F2152</color>
+    
+    <color name="textfield_rectangle_text_color">#ECEABE</color>
+    <color name="textfield_rectangle_bg">#1FCECB</color>
+    <color name="textfield_rectangle_stroke">#000000</color>
+    
+    <color name="textfield_listview_divider">#00000000</color>
     
 </resources>

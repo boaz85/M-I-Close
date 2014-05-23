@@ -5,6 +5,7 @@ import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.AsyncTask;
@@ -15,7 +16,11 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AutoCompleteTextView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.RelativeLayout.LayoutParams;
 import android.widget.SeekBar;
@@ -62,7 +67,7 @@ public class SetTargetActivity extends MICloseBaseActivity {
 		mDistanceSeekBar = (SeekBar) findViewById(R.id.targetDistanceSeekBar);
 		mGoTextView = (TextView) findViewById(R.id.goTextView);
 		mAddressAutoCompleteTextView = (AutoCompleteTextView) findViewById(R.id.targetAddressEditText);
-		mKilometersTextView = (TextView) findViewById(R.id.metersNumberTextView);
+		mKilometersTextView = (TextView) findViewById(R.id.metersNumberTextView);;
 		
 		String lng = Locale.getDefault().getLanguage();
 	
@@ -79,16 +84,19 @@ public class SetTargetActivity extends MICloseBaseActivity {
 			
 			metersTextViewLayoutParams.addRule(RelativeLayout.ALIGN_RIGHT, 0);
 			metersTextViewLayoutParams.addRule(RelativeLayout.ALIGN_LEFT, R.id.targetAddressEditText);
+			metersTextViewLayoutParams.setMargins(0, 8, 0, 0);
 			
 			LayoutParams metersNumberTextViewLayoutParams = (LayoutParams) mKilometersTextView.getLayoutParams();
 			
 			metersNumberTextViewLayoutParams.addRule(RelativeLayout.LEFT_OF, 0);
 			metersNumberTextViewLayoutParams.addRule(RelativeLayout.ALIGN_LEFT, 0);
 			metersNumberTextViewLayoutParams.addRule(RelativeLayout.RIGHT_OF, R.id.metersTextView);
-			metersNumberTextViewLayoutParams.setMargins(5, 0, 0, 0);
+			metersNumberTextViewLayoutParams.setMargins(8, 0, 0, 0);
 			
 			metersTextView.setLayoutParams(metersTextViewLayoutParams);
 			mKilometersTextView.setLayoutParams(metersNumberTextViewLayoutParams);
+			
+			
 		}
 		
 		
@@ -96,11 +104,28 @@ public class SetTargetActivity extends MICloseBaseActivity {
 		mAddressAutoCompleteTextView.addTextChangedListener(getAddressAutoCompleteTextViewTextChangedListener());
 		mAddressAutoCompleteTextView.setOnEditorActionListener(getAddressAutoCompleteTextViewOnEditorActionListener());
 		
+		mAddressAutoCompleteTextView.setOnItemClickListener(new OnItemClickListener() {
+
+			  @Override
+			  public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+			    InputMethodManager in = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+			    in.hideSoftInputFromWindow(mAddressAutoCompleteTextView.getWindowToken(), 0);
+
+			  }
+
+			});
+		
 		mDistanceSeekBar.setProgress(seekBarInitValue / mSeekBarMultiFactor);
 		mKilometersTextView.setText(String.valueOf(seekBarInitValue));
 		mGoTextView.setOnClickListener(getGoTextViewOnClickListener());
 		mDistanceSeekBar.setOnSeekBarChangeListener(getDistanceSeekBarOnSeekBarChangeListener());
 	}
+	
+	@Override
+    public void onBackPressed() {
+    	
+    	backPressed();
+    }
 	
 	
 	private OnEditorActionListener getAddressAutoCompleteTextViewOnEditorActionListener() {
@@ -129,60 +154,8 @@ public class SetTargetActivity extends MICloseBaseActivity {
 					return;
 				}
 
-				mLocationString = mAddressAutoCompleteTextView.getText().toString();
-				
-				if (mLocationString.equals("")) {
-	    			
-	    			showToast(R.string.you_need_to_type_address, true);
-	    			return;
-	    		}
-
-				Log.d(MICloseUtils.APP_LOG_TAG, "Geocoding input address");
 				GeocodeTask geocodeTask = new GeocodeTask();
 				geocodeTask.execute();
-				
-				boolean result = false;
-				
-				try {
-					
-					int timeout = getResources().getInteger(R.integer.geocode_timout);
-					result = geocodeTask.get(timeout, TimeUnit.SECONDS);
-					
-				} catch (TimeoutException e) {
-					
-					Log.w(MICloseUtils.APP_LOG_TAG, "Geocode timeout reached!");
-					showToast(R.string.connection_timeout, true);
-					return;
-					
-				} catch (Exception e) {
-					
-					Log.e(MICloseUtils.APP_LOG_TAG, "Geocode task failed!");
-					e.printStackTrace();
-				}
-				
-				if (result == false || mTargetAddress == null) {
-
-					return;
-				}
-
-				int targetDistance = (mDistanceSeekBar.getProgress() + 1)
-						* mSeekBarMultiFactor;
-				
-				mMICloseStore.clear().commit();
-				Log.d(MICloseUtils.APP_LOG_TAG, "Store data cleared");
-
-				mMICloseStore.setTargetDistance(targetDistance)
-							.setTargetLatitude(mTargetAddress.getLatitude())
-							.setTargetLongitude(mTargetAddress.getLongitude())
-							.commit();
-
-				
-				startProximityAlarmSchedule();
-				
-				Intent alarmActivityIntent = new Intent(SetTargetActivity.this, AlarmActivity.class);
-				
-				Log.d(MICloseUtils.APP_LOG_TAG, "Starting AlarmActivity");
-				startActivity(alarmActivityIntent);
 			}
 		};
 	}
@@ -202,6 +175,8 @@ public class SetTargetActivity extends MICloseBaseActivity {
 
 				AutoCompleteTask autoCompleteTask = new AutoCompleteTask(getApplicationContext(), mAddressAutoCompleteTextView);
 				autoCompleteTask.execute();
+				
+				
 
 			}
 		};
@@ -250,7 +225,7 @@ public class SetTargetActivity extends MICloseBaseActivity {
 	}
 
     
-    public class GeocodeTask extends AsyncTask<Void, Integer, Boolean> {
+    public class GeocodeTask extends AsyncTask<Void, Integer, Integer> {
 
     	
     	private Context mApplicationContext;
@@ -266,16 +241,28 @@ public class SetTargetActivity extends MICloseBaseActivity {
     		mGeocoder = new Geocoder(mApplicationContext);
     		mAddresses = null;
     		
-    		mProgressDialog = new ProgressDialog(SetTargetActivity.this);
-			mProgressDialog.setTitle(R.string.processing);
-			mProgressDialog.setMessage(getResources().getString(R.string.please_wait));
+    		mProgressDialog = new ProgressDialog(SetTargetActivity.this, R.style.CustomDialog);
+			mProgressDialog.setMessage(getResources().getString(R.string.processing));
 			mProgressDialog.setCancelable(false);
 			mProgressDialog.setIndeterminate(true);
 			mProgressDialog.show();
+			
+			
+			
+
+			mLocationString = mAddressAutoCompleteTextView.getText().toString();
+			
+			if (mLocationString.equals("")) {
+    			
+    			showToast(R.string.you_need_to_type_address, true);
+    			return;
+    		}
+
+			Log.d(MICloseUtils.APP_LOG_TAG, "Geocoding input address");
     	}
     	
     	@Override
-    	protected Boolean doInBackground(Void... params) {
+    	protected Integer doInBackground(Void... params) {
 
     		Log.d(MICloseUtils.APP_LOG_TAG, "Geocode AsyncTask is running");
     		
@@ -285,33 +272,66 @@ public class SetTargetActivity extends MICloseBaseActivity {
     		} catch (IllegalArgumentException e) {
 
     			Log.e(MICloseUtils.APP_LOG_TAG, "Geocode input address is not valid");
-    			showToast(R.string.internal_error, true);
-    			return false;
+    			//showToast(R.string.internal_error, true);
+    			return R.string.internal_error;
 
     		} catch (IOException e) {
 
     			Log.e(MICloseUtils.APP_LOG_TAG, "Geocode network connection is not available");
-    			showToast(R.string.no_internet_connection, true);
-    			return false;
+    			//showToast(R.string.no_internet_connection, true);
+    			return R.string.no_internet_connection;
     		}
 
     		if (mAddresses.size() == 0) {
     			Log.w(MICloseUtils.APP_LOG_TAG, "Geocode address not found");
-    			showToast(R.string.adress_not_found, true);
-    			return false;
+    			//showToast(R.string.adress_not_found, true);
+    			return R.string.adress_not_found;
     		}
 
     		mTargetAddress = mAddresses.get(0);
-    		return true;
+
+			if (mTargetAddress == null) {
+
+				return -1;
+			}
+			
+			int targetDistance = (mDistanceSeekBar.getProgress() + 1)
+					* mSeekBarMultiFactor;
+			
+			mMICloseStore.clear().commit();
+			Log.d(MICloseUtils.APP_LOG_TAG, "Store data cleared");
+
+			mMICloseStore.setTargetDistance(targetDistance)
+						.setTargetLatitude(mTargetAddress.getLatitude())
+						.setTargetLongitude(mTargetAddress.getLongitude())
+						.commit();
+
+			
+			startProximityAlarmSchedule();
+
+    		return 0;
     	}
 
     	@Override
-    	protected void onPostExecute(Boolean result) {
+    	protected void onPostExecute(Integer result) {
     		
     		if (mProgressDialog!=null) {
     			
 				mProgressDialog.dismiss();
 			}
+
+    		if (result == -1) {
+    			return;
+    		
+    		} else if (result != 0) {
+    			showToast(result, true);
+    			return;
+    		}
+
+    		Intent alarmActivityIntent = new Intent(SetTargetActivity.this, AlarmActivity.class);
+			
+			Log.d(MICloseUtils.APP_LOG_TAG, "Starting AlarmActivity");
+			startActivity(alarmActivityIntent);
     	}
     }
 }

@@ -4,7 +4,7 @@
     <item android:id="@+android:id/background">
       
             <shape>
-                <solid android:color="@color/yellow" />
+                <solid android:color="@color/seekbar_progress_bar_bg" />
             </shape>
        
     </item>
@@ -13,7 +13,7 @@
     <item android:id="@+android:id/SecondaryProgress">
     	<clip>
             <shape>
-                <solid android:color="@color/purple" />
+                <solid android:color="@color/seekbar_progress_bar_fg" />
             </shape>
         </clip>
     </item>
@@ -21,7 +21,7 @@
     <item android:id="@+android:id/progress">
         <clip>
             <shape>
-                <solid android:color="@color/purple" />
+                <solid android:color="@color/seekbar_progress_bar_fg" />
             </shape>
         </clip>
     </item>
