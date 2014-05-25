@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    style="@style/MICloseAppTheme.SetTargetActivityTheme" >
+    style="@style/MICloseAppTheme.SetTargetActivityTheme"
+    android:background="@color/set_target_activity_bg">
 
     <AutoCompleteTextView
         android:id="@+id/targetAddressEditText"

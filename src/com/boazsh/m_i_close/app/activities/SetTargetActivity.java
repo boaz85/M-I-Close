@@ -26,10 +26,16 @@ import android.widget.RelativeLayout.LayoutParams;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
+import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
@@ -42,6 +48,7 @@ import com.boazsh.m_i_close.app.services.LocationService;
 public class SetTargetActivity extends MICloseBaseActivity {
 
 	protected static final String HEBREW_CODE = "iw";
+	private static final long GEOCODE_TASK_TIMEOUT = 10000;
 
 	private SeekBar mDistanceSeekBar;
 	private AutoCompleteTextView mAddressAutoCompleteTextView;
@@ -154,7 +161,7 @@ public class SetTargetActivity extends MICloseBaseActivity {
 					return;
 				}
 
-				GeocodeTask geocodeTask = new GeocodeTask();
+				final GeocodeTask geocodeTask = new GeocodeTask();
 				geocodeTask.execute();
 			}
 		};
@@ -225,13 +232,15 @@ public class SetTargetActivity extends MICloseBaseActivity {
 	}
 
     
-    public class GeocodeTask extends AsyncTask<Void, Integer, Integer> {
+    public class GeocodeTask extends AsyncTask<Void, Void, Void> {
 
     	
     	private Context mApplicationContext;
     	private Geocoder mGeocoder;
     	List<Address> mAddresses;
 		private ProgressDialog mProgressDialog;
+		
+		private int result;
 
     	
     	@Override
@@ -240,15 +249,13 @@ public class SetTargetActivity extends MICloseBaseActivity {
     		mApplicationContext = getApplicationContext();
     		mGeocoder = new Geocoder(mApplicationContext);
     		mAddresses = null;
+    		result = 0;
     		
     		mProgressDialog = new ProgressDialog(SetTargetActivity.this, R.style.CustomDialog);
 			mProgressDialog.setMessage(getResources().getString(R.string.processing));
 			mProgressDialog.setCancelable(false);
 			mProgressDialog.setIndeterminate(true);
 			mProgressDialog.show();
-			
-			
-			
 
 			mLocationString = mAddressAutoCompleteTextView.getText().toString();
 			
@@ -262,58 +269,31 @@ public class SetTargetActivity extends MICloseBaseActivity {
     	}
     	
     	@Override
-    	protected Integer doInBackground(Void... params) {
+    	protected Void doInBackground(Void... params) {
 
     		Log.d(MICloseUtils.APP_LOG_TAG, "Geocode AsyncTask is running");
     		
+    		ExecutorService executor = Executors.newSingleThreadExecutor();
+    		Future<String> timeoutGeocodeTask = executor.submit(new TimeOutGeocodeTask());
+    		
     		try {
-    			mAddresses = mGeocoder.getFromLocationName(mLocationString, 1);
-
-    		} catch (IllegalArgumentException e) {
-
-    			Log.e(MICloseUtils.APP_LOG_TAG, "Geocode input address is not valid");
-    			//showToast(R.string.internal_error, true);
-    			return R.string.internal_error;
-
-    		} catch (IOException e) {
-
-    			Log.e(MICloseUtils.APP_LOG_TAG, "Geocode network connection is not available");
-    			//showToast(R.string.no_internet_connection, true);
-    			return R.string.no_internet_connection;
-    		}
-
-    		if (mAddresses.size() == 0) {
-    			Log.w(MICloseUtils.APP_LOG_TAG, "Geocode address not found");
-    			//showToast(R.string.adress_not_found, true);
-    			return R.string.adress_not_found;
-    		}
-
-    		mTargetAddress = mAddresses.get(0);
-
-			if (mTargetAddress == null) {
-
-				return -1;
-			}
-			
-			int targetDistance = (mDistanceSeekBar.getProgress() + 1)
-					* mSeekBarMultiFactor;
-			
-			mMICloseStore.clear().commit();
-			Log.d(MICloseUtils.APP_LOG_TAG, "Store data cleared");
-
-			mMICloseStore.setTargetDistance(targetDistance)
-						.setTargetLatitude(mTargetAddress.getLatitude())
-						.setTargetLongitude(mTargetAddress.getLongitude())
-						.commit();
-
-			
-			startProximityAlarmSchedule();
-
-    		return 0;
+    			
+				timeoutGeocodeTask.get(GEOCODE_TASK_TIMEOUT, TimeUnit.MILLISECONDS);
+				
+    		} catch (TimeoutException e) {
+    			
+				result = R.string.connection_timeout;
+				
+			} catch (Exception e) {
+				// TODO handle this
+				e.printStackTrace();
+			} 
+    		
+    		return null;
     	}
 
     	@Override
-    	protected void onPostExecute(Integer result) {
+    	protected void onPostExecute(Void voidResult) {
     		
     		if (mProgressDialog!=null) {
     			
@@ -327,11 +307,57 @@ public class SetTargetActivity extends MICloseBaseActivity {
     			showToast(result, true);
     			return;
     		}
+    		startProximityAlarmSchedule();
 
     		Intent alarmActivityIntent = new Intent(SetTargetActivity.this, AlarmActivity.class);
 			
 			Log.d(MICloseUtils.APP_LOG_TAG, "Starting AlarmActivity");
 			startActivity(alarmActivityIntent);
     	}
+    	
+    	class TimeOutGeocodeTask implements Callable<String> {
+			
+			public String call() {
+				
+				try {
+	    			mAddresses = mGeocoder.getFromLocationName(mLocationString, 1);
+
+	    		} catch (IllegalArgumentException e) {
+
+	    			Log.e(MICloseUtils.APP_LOG_TAG, "Geocode input address is not valid");
+	    			result = R.string.internal_error;
+
+	    		} catch (IOException e) {
+
+	    			Log.e(MICloseUtils.APP_LOG_TAG, "Geocode network connection is not available");
+	    			result = R.string.no_internet_connection;
+	    		}
+
+	    		if (mAddresses.size() == 0) {
+	    			Log.w(MICloseUtils.APP_LOG_TAG, "Geocode address not found");
+	    			result = R.string.adress_not_found;
+	    		}
+
+	    		mTargetAddress = mAddresses.get(0);
+
+				if (mTargetAddress == null) {
+
+					result = -1;
+				}
+				
+				int targetDistance = (mDistanceSeekBar.getProgress() + 1)
+						* mSeekBarMultiFactor;
+				
+				mMICloseStore.clear().commit();
+				Log.d(MICloseUtils.APP_LOG_TAG, "Store data cleared");
+
+				mMICloseStore.setTargetDistance(targetDistance)
+							.setTargetLatitude(mTargetAddress.getLatitude())
+							.setTargetLongitude(mTargetAddress.getLongitude())
+							.commit();
+
+				return null;
+			}
+		};
     }
 }

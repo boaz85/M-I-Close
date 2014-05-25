@@ -15,7 +15,7 @@
     </style>
     
     <style name="MICloseAppTheme.SetTargetActivityTheme">
-        <item name="android:background">@color/set_target_activity_bg</item>
+        
         <item name="android:gravity">center_horizontal</item>
     </style>
     
