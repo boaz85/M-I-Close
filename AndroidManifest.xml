@@ -21,7 +21,7 @@
 
     <uses-sdk
         android:maxSdkVersion="19"
-        android:minSdkVersion="11"
+        android:minSdkVersion="14"
         android:targetSdkVersion="19" />
 
     <uses-permission android:name="com.boazsh.m_i_close.app.permission.MAPS_RECEIVE" />

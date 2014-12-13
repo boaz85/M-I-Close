@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        jar="/home/boazsh/M-I-Close/libs/android-support-v4.jar"
+        jumboMode="false"
+        revision="21.1.1"
+        sha1="ded9acc6a9792b8f1afc470f0c9cd36d178914cd">
+        <dex dex="/home/boazsh/M-I-Close/build/intermediates/pre-dexed/debug/android-support-v4-c142cd2e5ad8c222bf4e0dd5a4c97053b7c39c67.jar" />
+    </item>
+    <item
+        jar="/home/boazsh/M-I-Close/build/intermediates/exploded-aar/com.google.android.gms/play-services/6.5.87/classes.jar"
+        jumboMode="false"
+        revision="21.1.1"
+        sha1="dd9247ea0fabe8ee479638c4b4a23e93752be256">
+        <dex dex="/home/boazsh/M-I-Close/build/intermediates/pre-dexed/debug/classes-62bd57a8f8ab839243da23fae38a8cac130a0982.jar" />
+    </item>
+
+</items>

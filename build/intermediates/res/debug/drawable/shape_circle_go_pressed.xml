@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:shape="oval">
+  <!--  
+  <solid android:color="@color/light_blue" />
+  -->
+  <gradient 
+     android:type="radial"
+     android:startColor="@color/circle_go_bg1"
+     android:centerColor="@color/circle_go_bg1"
+     android:endColor="@color/circle_go_bg2"
+     android:angle="90"
+     android:gradientRadius="600"
+     android:thickness="30dp">
+   </gradient>
+   <!-- 
+  <stroke 
+    android:width="1dp"
+    android:color="#000000" />
+  -->
+  <size 
+    android:width="60dp"
+    android:height="60dp"/>
+</shape><!-- From: file:/home/boazsh/M-I-Close/res/drawable/shape_circle_go_pressed.xml -->

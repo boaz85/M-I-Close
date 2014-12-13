@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/MICloseAppTheme.SetTargetActivityTheme"
+    android:background="@color/set_target_activity_bg">
+
+    <AutoCompleteTextView
+        android:id="@+id/targetAddressEditText"
+        style="@style/MICloseAppTheme.EditText"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="40dp"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:textSize="25sp"
+         >
+        <requestFocus />
+        
+    </AutoCompleteTextView>
+    
+    <TextView
+        android:id="@+id/setAlarmTextView"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/targetAddressEditText"
+        android:layout_below="@+id/targetAddressEditText"
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="40dp"
+        android:gravity="left"
+        android:text="@string/how_far_from_target"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <SeekBar
+        android:id="@+id/targetDistanceSeekBar"
+        style="@style/MICloseAppTheme.SeekBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/setAlarmTextView"
+        android:layout_marginTop="10dp"
+        android:maxHeight="6dip"
+        android:minHeight="6dip"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+         />
+    
+    
+    <TextView
+        android:id="@+id/metersTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/targetDistanceSeekBar"
+        android:layout_marginTop="4dp"
+        android:layout_alignRight="@+id/targetAddressEditText"
+        android:text="@string/kilometers"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+    
+    
+    <TextView
+        android:id="@+id/metersNumberTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/metersTextView"
+        android:layout_alignBottom="@+id/metersTextView"
+        android:layout_marginRight="3dp"
+        android:layout_toLeftOf="@+id/metersTextView"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TextView
+        android:id="@+id/goTextView"
+        style="@style/MICloseAppTheme.BigButton.GoButton"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_below="@+id/metersNumberTextView"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="25dp" 
+        android:textSize="45sp" />
+
+
+
+</RelativeLayout>
+<!-- From: file:/home/boazsh/M-I-Close/res/layout/activity_set_target.xml -->

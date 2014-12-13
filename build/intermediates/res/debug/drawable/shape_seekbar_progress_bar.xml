@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android" >
+    
+    <item android:id="@+id/background">
+      
+            <shape>
+                <solid android:color="@color/seekbar_progress_bar_bg" />
+            </shape>
+       
+    </item>
+        
+    
+    <item android:id="@+id/SecondaryProgress">
+    	<clip>
+            <shape>
+                <solid android:color="@color/seekbar_progress_bar_fg" />
+            </shape>
+        </clip>
+    </item>
+    
+    <item android:id="@+id/progress">
+        <clip>
+            <shape>
+                <solid android:color="@color/seekbar_progress_bar_fg" />
+            </shape>
+        </clip>
+    </item>
+</layer-list><!-- From: file:/home/boazsh/M-I-Close/res/drawable/shape_seekbar_progress_bar.xml -->

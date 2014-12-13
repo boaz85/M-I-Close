@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/MICloseAppTheme.SetTargetActivityTheme" >
+
+    <AutoCompleteTextView
+        android:id="@+id/targetAddressEditText"
+        style="@style/MICloseAppTheme.EditText"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/targetDistanceSeekBar"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="38dp"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:textSize="25sp" />
+
+    <TextView
+        android:id="@+id/setAlarmTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/targetAddressEditText"
+        android:layout_below="@+id/targetAddressEditText"
+        android:layout_marginBottom="7dp"
+        android:layout_marginTop="70dp"
+        android:gravity="left"
+        android:text="@string/how_far_from_target"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <TextView
+        android:id="@+id/goTextView"
+        style="@style/MICloseAppTheme.BigButton.GoButton"
+        android:layout_width="180dp"
+        android:layout_height="180dp"
+        android:layout_alignRight="@+id/targetDistanceSeekBar"
+        android:layout_alignTop="@+id/targetAddressEditText"
+        android:layout_marginRight="8dp"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+
+        android:textSize="45sp" />
+
+    <TextView
+        android:id="@+id/metersNumberTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        
+        android:layout_toLeftOf="@+id/metersTextView"
+        
+        android:layout_below="@+id/targetDistanceSeekBar"
+        android:layout_marginTop="5dp"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TextView
+        android:id="@+id/metersTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        
+        android:layout_alignRight="@+id/targetDistanceSeekBar"
+        android:layout_marginRight="15dp"
+        android:layout_marginLeft="5dp"
+        
+        android:layout_alignBottom="@+id/metersNumberTextView"
+        android:text="@string/kilometers"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <SeekBar
+        android:id="@+id/targetDistanceSeekBar"
+        style="@style/MICloseAppTheme.SeekBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/setAlarmTextView"
+        android:layout_alignParentLeft="true"
+        android:layout_marginTop="30dp"
+        android:layout_marginRight="36dp"
+        android:layout_marginLeft="21dp"
+        android:maxHeight="6dip"
+        android:minHeight="6dip"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp" />
+
+</RelativeLayout><!-- From: file:/home/boazsh/M-I-Close/res/layout-land/activity_set_target.xml -->

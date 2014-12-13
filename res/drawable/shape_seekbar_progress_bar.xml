@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android" >
     
-    <item android:id="@+android:id/background">
+    <item android:id="@+id/background">
       
             <shape>
                 <solid android:color="@color/seekbar_progress_bar_bg" />
@@ -10,7 +10,7 @@
     </item>
         
     
-    <item android:id="@+android:id/SecondaryProgress">
+    <item android:id="@+id/SecondaryProgress">
     	<clip>
             <shape>
                 <solid android:color="@color/seekbar_progress_bar_fg" />
@@ -18,7 +18,7 @@
         </clip>
     </item>
     
-    <item android:id="@+android:id/progress">
+    <item android:id="@+id/progress">
         <clip>
             <shape>
                 <solid android:color="@color/seekbar_progress_bar_fg" />

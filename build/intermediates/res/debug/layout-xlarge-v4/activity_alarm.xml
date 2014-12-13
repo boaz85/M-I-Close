@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <fragment 
+        android:id="@+id/alarm_map1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:name="com.google.android.gms.maps.MapFragment"/>
+    
+    <TextView
+        android:id="@+id/newAlarmTextView"
+        style="@style/MICloseAppTheme.SemiCircleButton.Xlarge"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/shape_bottom_semicircle"
+        android:paddingTop="7dp"
+        android:text="@string/set_new_alarm"
+
+        android:visibility="invisible" />
+    
+    
+    <TextView
+        android:id="@+id/cancelAlarmTextView"
+        style="@style/MICloseAppTheme.SemiCircleButton.Xlarge"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/shape_top_semicircle2"
+        android:paddingBottom="23dp"
+        android:text="@string/cancel_alarm"
+
+        android:visibility="invisible" />
+    
+    <TextView
+        android:id="@+id/stopAlarmTextView"
+        style="@style/MICloseAppTheme.SemiCircleButton.Xlarge"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/shape_top_semicircle1"
+        android:paddingBottom="23dp"
+        android:text="@string/stop_alarm"
+
+        android:visibility="invisible" />
+    
+</RelativeLayout><!-- From: file:/home/boazsh/M-I-Close/res/layout-xlarge/activity_alarm.xml -->

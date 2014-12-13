@@ -1,0 +1,3 @@
+/home/boazsh/M-I-Close/build/intermediates/classes/debug
+/home/boazsh/M-I-Close/build/intermediates/pre-dexed/debug/android-support-v4-c142cd2e5ad8c222bf4e0dd5a4c97053b7c39c67.jar
+/home/boazsh/M-I-Close/build/intermediates/pre-dexed/debug/classes-62bd57a8f8ab839243da23fae38a8cac130a0982.jar
